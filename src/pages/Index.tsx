@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers, getTopic } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
-import TopicDetailModal from '@/components/TopicDetailModal';
-import UserProfileModal from '@/components/UserProfileModal';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -16,28 +14,32 @@ const Index: React.FC = () => {
   const [usersOpen, setUsersOpen] = useState(true);
   const { toast } = useToast();
   
-  // Updated to handle both direct user clicks and topic-to-user navigation
+  // Handle user clicks - select user and switch focus to users panel
   const handleUserClick = (userId: string) => {
     console.log("User click handler called with:", userId);
     setSelectedUserId(userId);
-    setSelectedTopicId(null);  // Close topic modal if open
-    
-    toast({
-      title: "User Profile",
-      description: "Viewing details for this community member",
-    });
+    setUsersOpen(true); // Ensure the users panel is open
+    if (!topicsOpen) {
+      setTopicsOpen(true); // Only show toast if we're toggling
+      toast({
+        title: "Viewing User",
+        description: "Showing details for this community member",
+      });
+    }
   };
   
-  // Updated to handle both direct topic clicks and user-to-topic navigation
+  // Handle topic clicks - select topic and switch focus to topics panel
   const handleTopicClick = (topicId: string) => {
     console.log("Topic click handler called with:", topicId);
     setSelectedTopicId(topicId);
-    setSelectedUserId(null);  // Close user modal if open
-    
-    toast({
-      title: "Topic Details",
-      description: "Viewing information about this topic",
-    });
+    setTopicsOpen(true); // Ensure the topics panel is open
+    if (!usersOpen) {
+      setUsersOpen(true); // Only show toast if we're toggling
+      toast({
+        title: "Viewing Topic",
+        description: "Showing information about this topic",
+      });
+    }
   };
   
   return (
@@ -104,18 +106,7 @@ const Index: React.FC = () => {
           </div>
         </main>
 
-        {/* Modals for detailed views */}
-        <TopicDetailModal 
-          topicId={selectedTopicId} 
-          onClose={() => setSelectedTopicId(null)}
-          onUserClick={handleUserClick} 
-        />
-        
-        <UserProfileModal 
-          userId={selectedUserId} 
-          onClose={() => setSelectedUserId(null)}
-          onTopicClick={handleTopicClick}
-        />
+        {/* Remove the modals as we're now using the main dashboard cards instead */}
       </div>
     </div>
   );

@@ -107,7 +107,9 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
 
   const handleUserClick = (userId: string) => {
     console.log("User clicked in TopicDetailPanel:", userId);
-    onUserClick(userId);
+    if (onUserClick) {
+      onUserClick(userId);
+    }
   };
   
   // Generate mock key mentions with users and conversations
