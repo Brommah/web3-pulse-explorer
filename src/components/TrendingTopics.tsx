@@ -2,15 +2,16 @@
 import React, { useState } from 'react';
 import TimeframeSelector from './TimeframeSelector';
 import TopicCard from './TopicCard';
+import TopicDetailPanel from './TopicDetailPanel';
 import { TimeFrame, getTopicsByTimeFrame } from '@/utils/mockData';
-import { Badge } from './ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
 interface TrendingTopicsProps {
   onTopicClick?: (topicId: string) => void;
+  expandedTopicId?: string | null;
 }
 
-const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick }) => {
+const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedTopicId }) => {
   const [activeTimeframe, setActiveTimeframe] = useState<TimeFrame>('24h');
   const { toast } = useToast();
   
@@ -25,13 +26,27 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick }) => {
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <div className="space-y-2">
         {topics.map(topic => (
-          <TopicCard 
-            key={topic.id} 
-            topic={topic} 
-            onClick={onTopicClick}
-          />
+          <div key={topic.id} className="w-full">
+            <TopicCard 
+              topic={topic} 
+              onClick={onTopicClick}
+              isExpanded={expandedTopicId === topic.id}
+            />
+            {expandedTopicId === topic.id && (
+              <TopicDetailPanel 
+                topicId={topic.id} 
+                onUserClick={(userId) => {
+                  if (onTopicClick) {
+                    // This is a bit of a hack - we're using onTopicClick to handle user clicks
+                    // from within the topic detail panel
+                    onTopicClick(userId);
+                  }
+                }} 
+              />
+            )}
+          </div>
         ))}
       </div>
     </div>

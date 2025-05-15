@@ -3,8 +3,14 @@ import React, { useState } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
-import UserProfileModal from '@/components/UserProfileModal';
-import TopicDetailModal from '@/components/TopicDetailModal';
+import UserDetailPanel from '@/components/UserDetailPanel';
+import TopicDetailPanel from '@/components/TopicDetailPanel';
+import { 
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@/components/ui/accordion';
 import { 
   Collapsible, 
   CollapsibleContent, 
@@ -19,13 +25,13 @@ const Index: React.FC = () => {
   const [usersOpen, setUsersOpen] = useState(true);
   
   const handleUserClick = (userId: string) => {
-    setSelectedUserId(userId);
-    setSelectedTopicId(null);  // Close topic modal if open
+    setSelectedUserId(prevId => prevId === userId ? null : userId);
+    setSelectedTopicId(null);  // Close topic if open
   };
   
   const handleTopicClick = (topicId: string) => {
-    setSelectedTopicId(topicId);
-    setSelectedUserId(null);  // Close user modal if open
+    setSelectedTopicId(prevId => prevId === topicId ? null : topicId);
+    setSelectedUserId(null);  // Close user if open
   };
   
   return (
@@ -54,7 +60,12 @@ const Index: React.FC = () => {
               </div>
               
               <CollapsibleContent>
-                <TrendingTopics onTopicClick={handleTopicClick} />
+                <div className="space-y-2">
+                  {TrendingTopics({
+                    onTopicClick: handleTopicClick,
+                    expandedTopicId: selectedTopicId,
+                  })}
+                </div>
               </CollapsibleContent>
             </Collapsible>
             
@@ -72,27 +83,27 @@ const Index: React.FC = () => {
               </div>
               
               <CollapsibleContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
                   {mockUsers.map(user => (
-                    <UserCard key={user.id} user={user} onClick={handleUserClick} />
+                    <div key={user.id} className="w-full">
+                      <UserCard 
+                        user={user} 
+                        onClick={handleUserClick} 
+                        isExpanded={selectedUserId === user.id} 
+                      />
+                      {selectedUserId === user.id && (
+                        <UserDetailPanel 
+                          userId={user.id} 
+                          onTopicClick={handleTopicClick} 
+                        />
+                      )}
+                    </div>
                   ))}
                 </div>
               </CollapsibleContent>
             </Collapsible>
           </div>
         </main>
-        
-        <UserProfileModal
-          userId={selectedUserId}
-          onClose={() => setSelectedUserId(null)}
-          onTopicClick={handleTopicClick}
-        />
-        
-        <TopicDetailModal
-          topicId={selectedTopicId}
-          onClose={() => setSelectedTopicId(null)}
-          onUserClick={handleUserClick}
-        />
       </div>
     </div>
   );
