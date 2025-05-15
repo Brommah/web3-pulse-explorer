@@ -21,6 +21,14 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, on
   
   const conversations = getConversationsByUserId(userId);
 
+  const handleTopicClick = (topicId: string) => {
+    console.log("Topic clicked in UserProfileModal:", topicId);
+    if (onTopicClick) {
+      onTopicClick(topicId);
+      onClose(); // Close the user modal when navigating to a topic
+    }
+  };
+
   return (
     <Dialog open={!!userId} onOpenChange={() => onClose()}>
       <DialogContent className="bg-web3-bg-dark text-white border-gray-800 max-w-3xl">
@@ -50,7 +58,7 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, on
             <EngagementMetrics user={user} conversations={conversations} />
             <ConversationHistory 
               conversations={conversations} 
-              onTopicClick={onTopicClick} 
+              onTopicClick={handleTopicClick} 
             />
           </div>
         </div>

@@ -8,7 +8,7 @@ import TopicDetailPanel from './TopicDetailPanel';
 
 interface TopicCardProps {
   topic: Topic;
-  onClick?: (userId: string) => void;
+  onClick?: (topicId: string) => void;
   isExpanded: boolean;
 }
 
@@ -17,6 +17,13 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
   
   const handleClick = () => {
     if (onClick) onClick(topic.id);
+  };
+  
+  const handleUserClick = (userId: string) => {
+    console.log("User clicked in TopicCard:", userId);
+    if (onClick) {
+      onClick(userId);
+    }
   };
   
   return (
@@ -63,12 +70,7 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
           <TopicDetailPanel 
             topicId={topic.id} 
             skipTitle={true} // Skip displaying the title again in the expanded view
-            onUserClick={(userId) => {
-              console.log("User clicked in topic card:", userId);
-              if (onClick) {
-                onClick(userId);
-              }
-            }}
+            onUserClick={handleUserClick}
           />
         </div>
       )}

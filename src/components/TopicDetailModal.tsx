@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getTopic, getUsersDiscussingTopic, User, Topic } from '@/utils/mockData';
@@ -44,6 +43,12 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
   
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
+
+  const handleUserClick = (userId: string) => {
+    console.log("User clicked in TopicDetailModal:", userId);
+    onUserClick(userId);
+    onClose(); // Close the topic modal when navigating to a user
+  };
   
   // Updated mock users to include all required User properties
   const mockUsers: User[] = [
@@ -257,10 +262,7 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
                 <Card 
                   key={user.id}
                   className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors"
-                  onClick={() => {
-                    console.log("User clicked in modal:", user.id);
-                    onUserClick(user.id);
-                  }}
+                  onClick={() => handleUserClick(user.id)}
                 >
                   <CardContent className="p-3 flex items-center space-x-3">
                     <Avatar>

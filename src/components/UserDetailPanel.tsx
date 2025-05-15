@@ -18,6 +18,13 @@ const UserDetailPanel: React.FC<UserDetailPanelProps> = ({ userId, onTopicClick 
   
   const conversations = getConversationsByUserId(userId);
 
+  const handleTopicClick = (topicId: string) => {
+    console.log("Topic clicked in UserDetailPanel:", topicId);
+    if (onTopicClick) {
+      onTopicClick(topicId);
+    }
+  };
+
   return (
     <div className="bg-web3-bg-dark rounded-md p-6 mt-3 border border-web3-accent-purple shadow-lg animate-fade-in">
       <div className="flex items-center space-x-4">
@@ -47,7 +54,7 @@ const UserDetailPanel: React.FC<UserDetailPanelProps> = ({ userId, onTopicClick 
           <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Conversation History</h3>
           <ConversationHistory 
             conversations={conversations} 
-            onTopicClick={onTopicClick} 
+            onTopicClick={handleTopicClick} 
           />
         </div>
       </div>

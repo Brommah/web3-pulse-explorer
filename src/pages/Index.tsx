@@ -1,8 +1,10 @@
 
 import React, { useState } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
-import { mockUsers } from '@/utils/mockData';
+import { mockUsers, getTopic } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
+import TopicDetailModal from '@/components/TopicDetailModal';
+import UserProfileModal from '@/components/UserProfileModal';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -14,26 +16,28 @@ const Index: React.FC = () => {
   const [usersOpen, setUsersOpen] = useState(true);
   const { toast } = useToast();
   
+  // Updated to handle both direct user clicks and topic-to-user navigation
   const handleUserClick = (userId: string) => {
-    setSelectedUserId(prevId => prevId === userId ? null : userId);
-    setSelectedTopicId(null);  // Close topic if open
-    if (selectedUserId !== userId) {
-      toast({
-        title: "User Profile",
-        description: "Viewing details for this community member",
-      });
-    }
+    console.log("User click handler called with:", userId);
+    setSelectedUserId(userId);
+    setSelectedTopicId(null);  // Close topic modal if open
+    
+    toast({
+      title: "User Profile",
+      description: "Viewing details for this community member",
+    });
   };
   
+  // Updated to handle both direct topic clicks and user-to-topic navigation
   const handleTopicClick = (topicId: string) => {
-    setSelectedTopicId(prevId => prevId === topicId ? null : topicId);
-    setSelectedUserId(null);  // Close user if open
-    if (selectedTopicId !== topicId) {
-      toast({
-        title: "Topic Details",
-        description: "Viewing information about this topic",
-      });
-    }
+    console.log("Topic click handler called with:", topicId);
+    setSelectedTopicId(topicId);
+    setSelectedUserId(null);  // Close user modal if open
+    
+    toast({
+      title: "Topic Details",
+      description: "Viewing information about this topic",
+    });
   };
   
   return (
@@ -99,6 +103,19 @@ const Index: React.FC = () => {
             </Collapsible>
           </div>
         </main>
+
+        {/* Modals for detailed views */}
+        <TopicDetailModal 
+          topicId={selectedTopicId} 
+          onClose={() => setSelectedTopicId(null)}
+          onUserClick={handleUserClick} 
+        />
+        
+        <UserProfileModal 
+          userId={selectedUserId} 
+          onClose={() => setSelectedUserId(null)}
+          onTopicClick={handleTopicClick}
+        />
       </div>
     </div>
   );

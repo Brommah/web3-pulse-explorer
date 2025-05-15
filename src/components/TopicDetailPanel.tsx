@@ -104,6 +104,11 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
       [mentionText]: !prev[mentionText]
     }));
   };
+
+  const handleUserClick = (userId: string) => {
+    console.log("User clicked in TopicDetailPanel:", userId);
+    onUserClick(userId);
+  };
   
   // Generate mock key mentions with users and conversations
   const keyMentions: KeyMention[] = [
@@ -318,10 +323,7 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
             <Card 
               key={user.id}
               className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors border border-gray-800"
-              onClick={() => {
-                console.log("User clicked:", user.id);
-                onUserClick(user.id);
-              }}
+              onClick={() => handleUserClick(user.id)}
             >
               <CardContent className="p-3 flex items-center space-x-3">
                 <Avatar>
