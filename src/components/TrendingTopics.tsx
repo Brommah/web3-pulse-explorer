@@ -25,26 +25,33 @@ const TOPIC_COLORS = [
   '#D946EF', // Magenta Pink - Other
 ];
 
-// Fixed tooltip that properly displays mentions and change data
+// Enhanced tooltip that properly shows data for each point
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload || !payload.length) return null;
   
   return (
-    <div className="bg-web3-card-bg p-2 border border-gray-700 rounded-md shadow-lg">
+    <div className="bg-web3-card-bg p-3 border border-gray-700 rounded-md shadow-lg">
+      <p className="font-medium text-sm text-white mb-2">{label}</p>
       {payload.map((entry: any, index: number) => (
-        <div key={`item-${index}`} className="flex flex-col gap-1">
-          <div 
-            className="w-2 h-2 rounded-full inline-block mr-2" 
-            style={{ backgroundColor: entry.color }}
-          />
-          <div className="text-white text-xs flex justify-between gap-4">
-            <span>Mentions:</span>
-            <span className="font-medium">{entry.value}</span>
+        <div key={`item-${index}`} className="flex flex-col gap-2 mt-1">
+          <div className="flex items-center">
+            <div 
+              className="w-3 h-3 rounded-full mr-2" 
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-white text-xs">{entry.name}</span>
           </div>
+          
           <div className="text-white text-xs flex justify-between gap-4">
-            <span>Change:</span>
-            <span className={entry.payload.trend > 0 ? 'text-web3-success' : 'text-web3-error'}>
-              {entry.payload.trend > 0 ? '+' : ''}{entry.payload.trend}%
+            <span className="text-web3-text-secondary">Mentions:</span>
+            <span className="font-medium">{entry.value.toLocaleString()}</span>
+          </div>
+          
+          <div className="text-white text-xs flex justify-between gap-4">
+            <span className="text-web3-text-secondary">Change:</span>
+            <span className={entry.payload[`${entry.dataKey}_trend`] > 0 ? 'text-web3-success' : 'text-web3-error'}>
+              {entry.payload[`${entry.dataKey}_trend`] > 0 ? '+' : ''}
+              {entry.payload[`${entry.dataKey}_trend`]}%
             </span>
           </div>
         </div>
