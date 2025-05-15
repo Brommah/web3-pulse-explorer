@@ -11,31 +11,30 @@ import {
   Tooltip,
   XAxis,
   YAxis,
-  Legend,
   CartesianGrid
 } from 'recharts';
-import { ChartContainer, ChartTooltipContent } from './ui/chart';
 import { Badge } from './ui/badge';
 import { useToast } from '@/hooks/use-toast';
 
+// Updated color palette to match design
 const TOPIC_COLORS = [
-  '#9b87f5', // Primary Purple
-  '#33C3F0', // Sky Blue
-  '#70D6BF', // Green
-  '#FEC6A1', // Soft Orange
-  '#D946EF', // Magenta Pink
+  '#9b87f5', // Purple - Ethereum Layer 2
+  '#33C3F0', // Sky Blue - DeFi Lending
+  '#70D6BF', // Green - NFT Market
+  '#FEC6A1', // Soft Orange - Zero Knowledge
+  '#D946EF', // Magenta Pink - Other
 ];
 
-// Custom tooltip component for the chart
+// Simple, clean tooltip that matches the design
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload || !payload.length) return null;
 
   const data = payload[0].payload;
   
   return (
-    <div className="bg-web3-card-bg p-3 border border-gray-700 rounded-md shadow-lg">
-      <p className="font-bold text-sm">{data.fullTitle}</p>
-      <div className="mt-1 space-y-1 text-xs">
+    <div className="bg-web3-card-bg p-2 border border-gray-700 rounded-md shadow-lg">
+      <p className="font-medium text-sm">{data.fullTitle}</p>
+      <div className="mt-1 space-y-0.5 text-xs">
         <p className="flex justify-between">
           <span className="text-web3-text-secondary mr-4">Mentions:</span>
           <span className="font-medium">{data.value}</span>
@@ -44,12 +43,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
           <span className="text-web3-text-secondary mr-4">Change:</span>
           <span className={data.trend > 0 ? 'text-web3-success' : 'text-web3-error'}>
             {data.trend > 0 ? '+' : ''}{data.trend}%
-          </span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-web3-text-secondary mr-4">Sentiment:</span>
-          <span className={data.sentiment > 0.5 ? 'text-web3-success' : data.sentiment < 0 ? 'text-web3-error' : 'text-web3-warning'}>
-            {Math.round((data.sentiment + 1) / 2 * 100)}%
           </span>
         </p>
       </div>
@@ -84,13 +77,48 @@ const TrendingTopics: React.FC = () => {
     }))
     .sort((a, b) => b.value - a.value);
 
+  // Generate time-based data points for each topic
+  const generateTimeData = () => {
+    // Get number of time points based on timeframe
+    const numTimePoints = activeTimeframe === '24h' ? 5 : 
+                          activeTimeframe === 'week' ? 7 : 4;
+    
+    // Time labels based on timeframe
+    const timeLabels = Array.from({ length: numTimePoints }).map((_, i) => {
+      if (activeTimeframe === '24h') return `${i * 4}h`;
+      if (activeTimeframe === 'week') return `Day ${i + 1}`;
+      return `Week ${i + 1}`;
+    });
+    
+    // Generate time series data for each topic
+    return timeLabels.map((time, i) => {
+      const timePoint: any = { time };
+      
+      // Add each topic's data to this time point
+      chartData.forEach(topic => {
+        // Calculate a realistic value for this time point
+        // Base it on the topic's mentions with some random variation
+        const baseValue = topic.value * (0.7 + (i / (numTimePoints - 1)) * 0.6);
+        const randomFactor = 0.9 + Math.random() * 0.2;
+        const value = Math.round(baseValue * randomFactor);
+        
+        timePoint[topic.id] = value;
+        timePoint[`${topic.id}_name`] = topic.fullTitle;
+        timePoint[`${topic.id}_color`] = topic.color;
+      });
+      
+      return timePoint;
+    });
+  };
+
+  const timeSeriesData = generateTimeData();
+  
   const toggleTopic = (topicId: string) => {
     setVisibleTopics(prev => {
       // If topic is currently visible, hide it unless it's the last one visible
       if (prev.includes(topicId)) {
         if (prev.length > 1) {
-          const newVisible = prev.filter(id => id !== topicId);
-          return newVisible;
+          return prev.filter(id => id !== topicId);
         } else {
           toast({
             title: "Cannot hide all topics",
@@ -106,24 +134,7 @@ const TrendingTopics: React.FC = () => {
   };
 
   // Format X-axis labels based on timeframe
-  const formatXAxisTick = (value: string, index: number) => {
-    if (activeTimeframe === '24h') {
-      // For 24h, show hours
-      return `${index * 4}h`;
-    } else if (activeTimeframe === 'week') {
-      // For week, show days
-      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-      return days[index % 7];
-    } else {
-      // For month, show week numbers
-      return `W${index + 1}`;
-    }
-  };
-
-  // Filter chart data to only show visible topics
-  const visibleChartData = chartData.filter(topic => 
-    visibleTopics.includes(topic.id)
-  );
+  const formatXAxisTick = (value: string) => value;
 
   return (
     <div className="space-y-6">
@@ -135,16 +146,16 @@ const TrendingTopics: React.FC = () => {
         />
       </div>
 
-      <div className="bg-web3-card-bg p-4 rounded-lg mb-6">
-        <div className="flex flex-col space-y-2">
-          <h3 className="text-lg font-medium">Topic Engagement Overview</h3>
+      <div className="bg-web3-card-bg rounded-lg">
+        <div className="p-4">
+          <h3 className="text-lg font-medium mb-3">Topic Engagement Overview</h3>
           
-          {/* Topic Legends */}
-          <div className="flex flex-wrap gap-2 mb-2">
-            {chartData.map((topic, index) => (
+          {/* Topic Legends - Styled as colorful pill buttons */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {chartData.map((topic) => (
               <Badge 
                 key={topic.id}
-                className={`cursor-pointer px-2 py-1 transition-opacity ${
+                className={`cursor-pointer px-3 py-1.5 transition-all ${
                   visibleTopics.includes(topic.id) 
                     ? 'opacity-100' 
                     : 'opacity-50'
@@ -166,20 +177,20 @@ const TrendingTopics: React.FC = () => {
           </div>
         </div>
 
-        <div className="h-[250px]">
+        <div className="h-[250px] pb-4">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart
-              data={visibleChartData}
+              data={timeSeriesData}
               margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
             >
-              <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.4} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#333" opacity={0.2} />
               <XAxis 
-                dataKey="name" 
+                dataKey="time" 
                 tick={{ fill: '#8E9196', fontSize: 10 }}
                 axisLine={{ stroke: '#333' }}
                 tickLine={false}
-                tickFormatter={formatXAxisTick}
                 padding={{ left: 10, right: 10 }}
+                tickFormatter={formatXAxisTick}
               />
               <YAxis 
                 tick={{ fill: '#8E9196', fontSize: 10 }}
@@ -190,19 +201,26 @@ const TrendingTopics: React.FC = () => {
               <Tooltip content={<CustomTooltip />} />
               
               {/* Render a separate line for each topic */}
-              {chartData
+              {topics
                 .filter(topic => visibleTopics.includes(topic.id))
                 .map((topic, index) => (
                   <Line
                     key={topic.id}
                     type="monotone"
-                    dataKey="value"
-                    data={[topic]}
-                    name={topic.fullTitle}
-                    stroke={topic.color}
-                    strokeWidth={2}
-                    dot={{ fill: topic.color, strokeWidth: 1, r: 4 }}
-                    activeDot={{ r: 6, stroke: 'white', strokeWidth: 1 }}
+                    dataKey={topic.id}
+                    name={topic.title}
+                    stroke={TOPIC_COLORS[index % TOPIC_COLORS.length]}
+                    strokeWidth={3}
+                    dot={{ 
+                      fill: TOPIC_COLORS[index % TOPIC_COLORS.length], 
+                      strokeWidth: 0, 
+                      r: 4 
+                    }}
+                    activeDot={{ 
+                      r: 6, 
+                      stroke: 'white', 
+                      strokeWidth: 1 
+                    }}
                   />
                 ))}
             </LineChart>
