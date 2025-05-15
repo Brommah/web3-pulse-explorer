@@ -54,7 +54,7 @@
   
   .card-glow::before {
     content: '';
-    @apply absolute -inset-0.5 rounded-lg bg-gradient-to-r from-web3-accent-purple/30 to-web3-accent-blue/30 opacity-0 transition duration-300 blur-md;
+    @apply absolute -inset-0.5 rounded-lg bg-gradient-to-r from-web3-accent-purple/20 to-web3-accent-blue/20 opacity-0 transition duration-300 blur-md;
   }
   
   .card-glow:hover::before {

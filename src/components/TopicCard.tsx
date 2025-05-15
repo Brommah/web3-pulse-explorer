@@ -37,12 +37,12 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
     <Card 
       className={`
         bg-web3-card-bg 
-        hover:border-web3-accent-purple 
+        hover:border-web3-accent-purple/30 
         transition-all 
         duration-300 
         cursor-pointer 
         w-full
-        ${isExpanded ? 'border-web3-accent-purple shadow-lg shadow-web3-accent-purple/10' : 'border-gray-800'}
+        border-gray-800
         ${isTrendUp ? 'hover:shadow-web3-success/5' : 'hover:shadow-web3-error/5'} 
         hover:shadow-lg
       `}

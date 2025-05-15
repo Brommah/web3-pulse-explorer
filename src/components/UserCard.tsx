@@ -35,17 +35,17 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
     <Card 
       className={`
         bg-web3-card-bg 
-        hover:border-web3-accent-purple 
+        hover:border-web3-accent-purple/30
         transition-all 
         duration-300
         w-full 
-        ${isExpanded ? 'border-web3-accent-purple' : 'border-gray-800'}
+        border-gray-800
       `}
     >
       <CardContent className="p-4 cursor-pointer" onClick={handleClick}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
-            <Avatar className="h-10 w-10 border-2 border-web3-accent-purple">
+            <Avatar className="h-10 w-10 border-2 border-web3-accent-purple/30">
               <AvatarImage src={user.avatar} alt={user.username} />
               <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
             </Avatar>
