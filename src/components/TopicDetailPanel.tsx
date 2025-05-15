@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation, User } from '@/utils/mockData';
 import { Badge } from './ui/badge';
@@ -317,7 +318,10 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
             <Card 
               key={user.id}
               className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors border border-gray-800"
-              onClick={() => onUserClick(user.id)}
+              onClick={() => {
+                console.log("User clicked:", user.id);
+                onUserClick(user.id);
+              }}
             >
               <CardContent className="p-3 flex items-center space-x-3">
                 <Avatar>

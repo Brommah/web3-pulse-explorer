@@ -257,7 +257,10 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
                 <Card 
                   key={user.id}
                   className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors"
-                  onClick={() => onUserClick(user.id)}
+                  onClick={() => {
+                    console.log("User clicked in modal:", user.id);
+                    onUserClick(user.id);
+                  }}
                 >
                   <CardContent className="p-3 flex items-center space-x-3">
                     <Avatar>
