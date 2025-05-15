@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import TimeframeSelector from './TimeframeSelector';
 import TopicCard from './TopicCard';
@@ -26,27 +25,30 @@ const TOPIC_COLORS = [
   '#D946EF', // Magenta Pink - Other
 ];
 
-// Simple, clean tooltip that matches the design
+// Fixed tooltip that properly displays mentions and change data
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload || !payload.length) return null;
-
-  const data = payload[0].payload;
   
   return (
     <div className="bg-web3-card-bg p-2 border border-gray-700 rounded-md shadow-lg">
-      <p className="font-medium text-sm">{data.fullTitle}</p>
-      <div className="mt-1 space-y-0.5 text-xs">
-        <p className="flex justify-between">
-          <span className="text-web3-text-secondary mr-4">Mentions:</span>
-          <span className="font-medium">{data.value}</span>
-        </p>
-        <p className="flex justify-between">
-          <span className="text-web3-text-secondary mr-4">Change:</span>
-          <span className={data.trend > 0 ? 'text-web3-success' : 'text-web3-error'}>
-            {data.trend > 0 ? '+' : ''}{data.trend}%
-          </span>
-        </p>
-      </div>
+      {payload.map((entry: any, index: number) => (
+        <div key={`item-${index}`} className="flex flex-col gap-1">
+          <div 
+            className="w-2 h-2 rounded-full inline-block mr-2" 
+            style={{ backgroundColor: entry.color }}
+          />
+          <div className="text-white text-xs flex justify-between gap-4">
+            <span>Mentions:</span>
+            <span className="font-medium">{entry.value}</span>
+          </div>
+          <div className="text-white text-xs flex justify-between gap-4">
+            <span>Change:</span>
+            <span className={entry.payload.trend > 0 ? 'text-web3-success' : 'text-web3-error'}>
+              {entry.payload.trend > 0 ? '+' : ''}{entry.payload.trend}%
+            </span>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };
@@ -110,6 +112,7 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick }) => {
         timePoint[topic.id] = value;
         timePoint[`${topic.id}_name`] = topic.fullTitle;
         timePoint[`${topic.id}_color`] = topic.color;
+        timePoint[`${topic.id}_trend`] = topic.trend;
       });
       
       return timePoint;
