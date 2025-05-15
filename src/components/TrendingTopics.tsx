@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import TimeframeSelector from './TimeframeSelector';
 import TopicCard from './TopicCard';
-import TopicDetailPanel from './TopicDetailPanel';
 import { TimeFrame, getTopicsByTimeFrame } from '@/utils/mockData';
 import { useToast } from '@/hooks/use-toast';
 
@@ -36,25 +35,12 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedT
 
       <div className="space-y-3">
         {topics.map(topic => (
-          <div key={topic.id} className="w-full">
-            <TopicCard 
-              topic={topic} 
-              onClick={onTopicClick}
-              isExpanded={expandedTopicId === topic.id}
-            />
-            {expandedTopicId === topic.id && (
-              <TopicDetailPanel 
-                topicId={topic.id} 
-                onUserClick={(userId) => {
-                  if (onTopicClick) {
-                    // This is a bit of a hack - we're using onTopicClick to handle user clicks
-                    // from within the topic detail panel
-                    onTopicClick(userId);
-                  }
-                }} 
-              />
-            )}
-          </div>
+          <TopicCard 
+            key={topic.id}
+            topic={topic} 
+            onClick={onTopicClick}
+            isExpanded={expandedTopicId === topic.id}
+          />
         ))}
       </div>
     </div>

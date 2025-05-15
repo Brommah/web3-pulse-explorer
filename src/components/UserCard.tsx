@@ -1,9 +1,11 @@
 
+import React from 'react';
 import { User } from '@/utils/mockData';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronDown } from "lucide-react";
+import UserDetailPanel from './UserDetailPanel';
 
 interface UserCardProps {
   user: User;
@@ -12,20 +14,22 @@ interface UserCardProps {
 }
 
 const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
+  const handleClick = () => {
+    onClick(user.id);
+  };
+
   return (
     <Card 
       className={`
         bg-web3-card-bg 
         hover:border-web3-accent-purple 
         transition-all 
-        duration-300 
-        cursor-pointer 
+        duration-300
         w-full 
         ${isExpanded ? 'border-web3-accent-purple' : 'border-gray-800'}
       `}
-      onClick={() => onClick(user.id)}
     >
-      <CardContent className="p-4">
+      <CardContent className="p-4 cursor-pointer" onClick={handleClick}>
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <Avatar className="h-10 w-10 border-2 border-web3-accent-purple">
@@ -45,6 +49,19 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
           </div>
         </div>
       </CardContent>
+
+      {isExpanded && (
+        <div className="animate-accordion-down overflow-hidden">
+          <UserDetailPanel 
+            userId={user.id} 
+            onTopicClick={(topicId) => {
+              if (onClick) {
+                onClick(topicId);
+              }
+            }} 
+          />
+        </div>
+      )}
     </Card>
   );
 };

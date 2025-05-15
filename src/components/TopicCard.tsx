@@ -1,8 +1,10 @@
 
+import React from 'react';
 import { Topic } from '@/utils/mockData';
 import { TrendingUp, TrendingDown, ChevronDown } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import TopicDetailPanel from './TopicDetailPanel';
 
 interface TopicCardProps {
   topic: Topic;
@@ -28,9 +30,8 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
         w-full
         ${isExpanded ? 'border-web3-accent-purple' : 'border-gray-800'}
       `}
-      onClick={handleClick}
     >
-      <CardContent className="p-4">
+      <CardContent className="p-4" onClick={handleClick}>
         <div className="flex justify-between items-center">
           <div>
             <h3 className="font-bold text-lg text-white">{topic.title}</h3>
@@ -56,6 +57,19 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
           </div>
         </div>
       </CardContent>
+
+      {isExpanded && (
+        <div className="animate-accordion-down overflow-hidden">
+          <TopicDetailPanel 
+            topicId={topic.id} 
+            onUserClick={(userId) => {
+              if (onClick) {
+                onClick(userId);
+              }
+            }}
+          />
+        </div>
+      )}
     </Card>
   );
 };

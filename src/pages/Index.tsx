@@ -3,8 +3,6 @@ import React, { useState } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
-import UserDetailPanel from '@/components/UserDetailPanel';
-import TopicDetailPanel from '@/components/TopicDetailPanel';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -65,10 +63,10 @@ const Index: React.FC = () => {
               
               <CollapsibleContent>
                 <div className="space-y-3">
-                  {TrendingTopics({
-                    onTopicClick: handleTopicClick,
-                    expandedTopicId: selectedTopicId,
-                  })}
+                  <TrendingTopics 
+                    onTopicClick={handleTopicClick}
+                    expandedTopicId={selectedTopicId}
+                  />
                 </div>
               </CollapsibleContent>
             </Collapsible>
@@ -89,19 +87,12 @@ const Index: React.FC = () => {
               <CollapsibleContent>
                 <div className="space-y-3">
                   {mockUsers.map(user => (
-                    <div key={user.id} className="w-full">
-                      <UserCard 
-                        user={user} 
-                        onClick={handleUserClick} 
-                        isExpanded={selectedUserId === user.id} 
-                      />
-                      {selectedUserId === user.id && (
-                        <UserDetailPanel 
-                          userId={user.id} 
-                          onTopicClick={handleTopicClick} 
-                        />
-                      )}
-                    </div>
+                    <UserCard 
+                      key={user.id}
+                      user={user} 
+                      onClick={handleUserClick} 
+                      isExpanded={selectedUserId === user.id} 
+                    />
                   ))}
                 </div>
               </CollapsibleContent>
