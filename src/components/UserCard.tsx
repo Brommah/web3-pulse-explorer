@@ -18,6 +18,11 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
     onClick(user.id);
   };
 
+  const handleTopicClick = (topicId: string) => {
+    console.log("Topic clicked in UserCard:", topicId);
+    onClick(topicId); // Pass the topic ID to the parent's onClick handler
+  };
+
   return (
     <Card 
       className={`
@@ -54,11 +59,7 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
         <div className="animate-accordion-down overflow-hidden">
           <UserDetailPanel 
             userId={user.id} 
-            onTopicClick={(topicId) => {
-              if (onClick) {
-                onClick(topicId);
-              }
-            }} 
+            onTopicClick={handleTopicClick} 
           />
         </div>
       )}

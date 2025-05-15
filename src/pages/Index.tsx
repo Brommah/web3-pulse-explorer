@@ -17,29 +17,27 @@ const Index: React.FC = () => {
   // Handle user clicks - select user and switch focus to users panel
   const handleUserClick = (userId: string) => {
     console.log("User click handler called with:", userId);
+    // Important fix: Don't reset selectedTopicId, just set selectedUserId
     setSelectedUserId(userId);
     setUsersOpen(true); // Ensure the users panel is open
-    if (!topicsOpen) {
-      setTopicsOpen(true); // Only show toast if we're toggling
-      toast({
-        title: "Viewing User",
-        description: "Showing details for this community member",
-      });
-    }
+    
+    toast({
+      title: "Viewing User",
+      description: "Showing details for this community member",
+    });
   };
   
   // Handle topic clicks - select topic and switch focus to topics panel
   const handleTopicClick = (topicId: string) => {
     console.log("Topic click handler called with:", topicId);
+    // Important fix: Don't reset selectedUserId, just set selectedTopicId
     setSelectedTopicId(topicId);
     setTopicsOpen(true); // Ensure the topics panel is open
-    if (!usersOpen) {
-      setUsersOpen(true); // Only show toast if we're toggling
-      toast({
-        title: "Viewing Topic",
-        description: "Showing information about this topic",
-      });
-    }
+    
+    toast({
+      title: "Viewing Topic",
+      description: "Showing information about this topic",
+    });
   };
   
   return (
@@ -105,8 +103,6 @@ const Index: React.FC = () => {
             </Collapsible>
           </div>
         </main>
-
-        {/* Remove the modals as we're now using the main dashboard cards instead */}
       </div>
     </div>
   );
