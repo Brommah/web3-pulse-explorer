@@ -17,16 +17,24 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedT
   
   const topics = getTopicsByTimeFrame(activeTimeframe);
 
+  const handleTimeframeChange = (timeframe: TimeFrame) => {
+    setActiveTimeframe(timeframe);
+    toast({
+      title: "Timeframe Updated",
+      description: `Showing topics from the past ${timeframe}`,
+    });
+  };
+
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
+      <div className="flex justify-end mb-2">
         <TimeframeSelector 
           activeTimeframe={activeTimeframe} 
-          onTimeframeChange={setActiveTimeframe} 
+          onTimeframeChange={handleTimeframeChange} 
         />
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         {topics.map(topic => (
           <div key={topic.id} className="w-full">
             <TopicCard 

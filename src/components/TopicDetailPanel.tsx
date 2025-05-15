@@ -31,34 +31,35 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
   ];
   
   return (
-    <div className="bg-web3-bg-dark rounded-md p-4 mt-2 border border-gray-800 animate-fade-in">
+    <div className="bg-web3-bg-dark rounded-md p-6 mt-3 border border-web3-accent-purple shadow-lg animate-fade-in">
       <div className="flex justify-between items-start">
-        <h2 className="text-2xl font-bold">{topic.title}</h2>
-        <div className={`flex items-center ${isTrendUp ? 'text-web3-success' : 'text-web3-error'}`}>
-          {isTrendUp ? <TrendingUp size={18} /> : <TrendingDown size={18} />}
-          <span className="ml-1 text-base">{Math.abs(topic.trend)}%</span>
+        <div>
+          <h2 className="text-2xl font-bold">{topic.title}</h2>
+          <div className="flex flex-wrap gap-1 mt-2">
+            {topic.tags.map((tag, index) => (
+              <Badge key={index} variant="secondary" className="bg-web3-accent-purple bg-opacity-20 text-white">
+                {tag}
+              </Badge>
+            ))}
+          </div>
+        </div>
+        <div className={`flex items-center px-3 py-1.5 rounded-md ${isTrendUp ? 'bg-web3-success bg-opacity-10' : 'bg-web3-error bg-opacity-10'}`}>
+          {isTrendUp ? <TrendingUp size={20} className="text-web3-success" /> : <TrendingDown size={20} className="text-web3-error" />}
+          <span className={`ml-1.5 text-base font-bold ${isTrendUp ? 'text-web3-success' : 'text-web3-error'}`}>{Math.abs(topic.trend)}%</span>
         </div>
       </div>
       
-      <div className="flex flex-wrap gap-1 mt-2">
-        {topic.tags.map((tag, index) => (
-          <Badge key={index} variant="secondary" className="bg-opacity-20">
-            {tag}
-          </Badge>
-        ))}
-      </div>
-      
-      <div className="grid grid-cols-3 gap-4 mt-4">
-        <div className="bg-web3-card-bg p-3 rounded-md">
-          <p className="text-web3-text-secondary text-sm">Mentions</p>
+      <div className="grid grid-cols-3 gap-4 mt-6">
+        <div className="bg-web3-card-bg p-4 rounded-md shadow-md">
+          <p className="text-web3-text-secondary text-sm mb-1">Mentions</p>
           <p className="text-xl font-bold">{topic.mentions.toLocaleString()}</p>
         </div>
-        <div className="bg-web3-card-bg p-3 rounded-md">
-          <p className="text-web3-text-secondary text-sm">Participants</p>
+        <div className="bg-web3-card-bg p-4 rounded-md shadow-md">
+          <p className="text-web3-text-secondary text-sm mb-1">Participants</p>
           <p className="text-xl font-bold">{topic.participants}</p>
         </div>
-        <div className="bg-web3-card-bg p-3 rounded-md">
-          <p className="text-web3-text-secondary text-sm">Sentiment</p>
+        <div className="bg-web3-card-bg p-4 rounded-md shadow-md">
+          <p className="text-web3-text-secondary text-sm mb-1">Sentiment</p>
           <p className={`text-xl font-bold ${topic.sentiment > 0.5 ? 'text-web3-success' : topic.sentiment < 0 ? 'text-web3-error' : 'text-web3-warning'}`}>
             {Math.round((topic.sentiment + 1) / 2 * 100)}%
           </p>
@@ -66,16 +67,16 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
       </div>
       
       {/* Key Mentions Section */}
-      <div className="mt-6">
-        <h3 className="text-lg font-medium mb-3">Key Mentions</h3>
-        <div className="grid grid-cols-1 gap-2">
+      <div className="mt-8">
+        <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Key Mentions</h3>
+        <div className="grid grid-cols-1 gap-2.5">
           {keyMentions.map((mention, index) => (
             <div 
               key={index}
-              className={`p-2 rounded-md ${
-                mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-20' : 
-                mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-20' : 
-                'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-20'
+              className={`p-3 rounded-md ${
+                mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-30' : 
+                mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-30' : 
+                'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-30'
               }`}
             >
               <p className="text-sm">{mention.text}</p>
@@ -84,13 +85,13 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
         </div>
       </div>
       
-      <div className="mt-6">
-        <h3 className="text-lg font-medium mb-3">Key Contributors</h3>
+      <div className="mt-8">
+        <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Key Contributors</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {users.map(user => (
             <Card 
               key={user.id}
-              className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors"
+              className="bg-web3-card-bg cursor-pointer hover:border-web3-accent-purple transition-colors border border-gray-800"
               onClick={() => onUserClick(user.id)}
             >
               <CardContent className="p-3 flex items-center space-x-3">

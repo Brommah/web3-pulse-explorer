@@ -3,7 +3,6 @@ import { Topic } from '@/utils/mockData';
 import { TrendingUp, TrendingDown, ChevronDown } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { formatDistanceToNow } from 'date-fns';
 
 interface TopicCardProps {
   topic: Topic;
@@ -20,18 +19,40 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
   
   return (
     <Card 
-      className="bg-web3-card-bg hover:border-web3-accent-purple transition-all duration-300 cursor-pointer w-full"
+      className={`
+        bg-web3-card-bg 
+        hover:border-web3-accent-purple 
+        transition-all 
+        duration-300 
+        cursor-pointer 
+        w-full
+        ${isExpanded ? 'border-web3-accent-purple' : 'border-gray-800'}
+      `}
       onClick={handleClick}
     >
-      <CardContent className="pt-4">
+      <CardContent className="p-4">
         <div className="flex justify-between items-center">
-          <h3 className="font-bold text-lg text-white">{topic.title}</h3>
-          <div className="flex items-center">
-            <div className={`flex items-center mr-2 ${isTrendUp ? 'text-web3-success' : 'text-web3-error'}`}>
-              {isTrendUp ? <TrendingUp size={16} /> : <TrendingDown size={16} />}
-              <span className="ml-1 text-sm">{Math.abs(topic.trend)}%</span>
+          <div>
+            <h3 className="font-bold text-lg text-white">{topic.title}</h3>
+            <div className="flex flex-wrap gap-1 mt-1">
+              {topic.tags.slice(0, 3).map((tag, index) => (
+                <Badge key={index} variant="secondary" className="bg-opacity-20 text-xs px-2 py-0">
+                  {tag}
+                </Badge>
+              ))}
+              {topic.tags.length > 3 && (
+                <Badge variant="secondary" className="bg-opacity-20 text-xs px-2 py-0">
+                  +{topic.tags.length - 3}
+                </Badge>
+              )}
             </div>
-            <ChevronDown className={`h-5 w-5 transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
+          </div>
+          <div className="flex items-center space-x-2">
+            <div className={`flex items-center px-2 py-1 rounded ${isTrendUp ? 'bg-web3-success bg-opacity-10' : 'bg-web3-error bg-opacity-10'}`}>
+              {isTrendUp ? <TrendingUp size={14} className="text-web3-success" /> : <TrendingDown size={14} className="text-web3-error" />}
+              <span className={`ml-1 text-xs font-medium ${isTrendUp ? 'text-web3-success' : 'text-web3-error'}`}>{Math.abs(topic.trend)}%</span>
+            </div>
+            <ChevronDown className={`h-4 w-4 text-web3-text-secondary transition-transform ${isExpanded ? 'rotate-180' : ''}`} />
           </div>
         </div>
       </CardContent>
