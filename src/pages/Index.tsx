@@ -4,7 +4,7 @@ import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers, getTopic } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Sparkle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 
 const Index: React.FC = () => {
@@ -68,9 +68,13 @@ const Index: React.FC = () => {
   return (
     <div className="min-h-screen bg-web3-bg-dark">
       <div className="container mx-auto px-4 py-8">
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-white">Web3 Community Intelligence</h1>
-          <p className="text-web3-text-secondary mt-1">Track community discussions and user engagement</p>
+        <header className="mb-8 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-web3-card-bg border border-web3-accent-purple/30 mb-3 animated-gradient bg-gradient-to-r from-web3-accent-purple/10 to-web3-accent-blue/10">
+            <Sparkle size={16} className="text-web3-accent-purple animate-pulse-soft" />
+            <span className="text-sm font-medium">Web3 Intelligence Dashboard</span>
+          </div>
+          <h1 className="text-4xl font-bold text-white mb-2">Community Intelligence</h1>
+          <p className="text-web3-text-secondary text-lg max-w-2xl mx-auto">Real-time insights into community discussions, topics, and user engagement</p>
         </header>
         
         <main>
@@ -81,7 +85,7 @@ const Index: React.FC = () => {
             <Collapsible 
               open={topicsOpen} 
               onOpenChange={setTopicsOpen}
-              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800"
+              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800 card-glow"
             >
               <div className="flex justify-between items-center mb-5">
                 <h2 className="text-2xl font-bold text-white">Trending Topics</h2>
@@ -104,7 +108,7 @@ const Index: React.FC = () => {
             <Collapsible 
               open={usersOpen} 
               onOpenChange={setUsersOpen}
-              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800"
+              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800 card-glow"
             >
               <div className="flex justify-between items-center mb-5">
                 <h2 className="text-2xl font-bold text-white">Top Community Members</h2>

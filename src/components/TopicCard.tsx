@@ -42,7 +42,9 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
         duration-300 
         cursor-pointer 
         w-full
-        ${isExpanded ? 'border-web3-accent-purple' : 'border-gray-800'}
+        ${isExpanded ? 'border-web3-accent-purple shadow-lg shadow-web3-accent-purple/10' : 'border-gray-800'}
+        ${isTrendUp ? 'hover:shadow-web3-success/5' : 'hover:shadow-web3-error/5'} 
+        hover:shadow-lg
       `}
     >
       <CardContent className="p-4" onClick={handleClick}>
