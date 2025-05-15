@@ -24,6 +24,12 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedT
     });
   };
 
+  const handleTopicClick = (topicId: string) => {
+    if (onTopicClick) {
+      onTopicClick(topicId);
+    }
+  };
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end mb-2">
@@ -35,12 +41,13 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedT
 
       <div className="space-y-3">
         {topics.map(topic => (
-          <TopicCard 
-            key={topic.id}
-            topic={topic} 
-            onClick={onTopicClick}
-            isExpanded={expandedTopicId === topic.id}
-          />
+          <div key={topic.id} data-topic-id={topic.id}>
+            <TopicCard 
+              topic={topic} 
+              onClick={handleTopicClick}
+              isExpanded={expandedTopicId === topic.id}
+            />
+          </div>
         ))}
       </div>
     </div>

@@ -20,7 +20,15 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
 
   const handleTopicClick = (topicId: string) => {
     console.log("Topic clicked in UserCard:", topicId);
-    onClick(topicId); // Pass the topic ID to the parent's onClick handler
+    // When a topic is clicked inside a user card, we want to navigate to that topic
+    // This will close the user card and open the topic card
+    onClick(user.id); // First close this user card by toggling it off
+    // Use setTimeout to ensure the user card toggle is processed first
+    setTimeout(() => {
+      // Then trigger the topic click in the parent component
+      const event = new CustomEvent('topic-click', { detail: { topicId } });
+      document.dispatchEvent(event);
+    }, 10);
   };
 
   return (

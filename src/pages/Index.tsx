@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers, getTopic } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
@@ -14,11 +14,11 @@ const Index: React.FC = () => {
   const [usersOpen, setUsersOpen] = useState(true);
   const { toast } = useToast();
   
-  // Handle user clicks - select user and switch focus to users panel
+  // Handle user clicks - toggle selection
   const handleUserClick = (userId: string) => {
     console.log("User click handler called with:", userId);
-    // Important fix: Don't reset selectedTopicId, just set selectedUserId
-    setSelectedUserId(userId);
+    // Toggle user selection - if already selected, deselect it
+    setSelectedUserId(prevId => prevId === userId ? null : userId);
     setUsersOpen(true); // Ensure the users panel is open
     
     toast({
@@ -27,11 +27,11 @@ const Index: React.FC = () => {
     });
   };
   
-  // Handle topic clicks - select topic and switch focus to topics panel
+  // Handle topic clicks - toggle selection
   const handleTopicClick = (topicId: string) => {
     console.log("Topic click handler called with:", topicId);
-    // Important fix: Don't reset selectedUserId, just set selectedTopicId
-    setSelectedTopicId(topicId);
+    // Toggle topic selection - if already selected, deselect it
+    setSelectedTopicId(prevId => prevId === topicId ? null : topicId);
     setTopicsOpen(true); // Ensure the topics panel is open
     
     toast({
@@ -39,6 +39,31 @@ const Index: React.FC = () => {
       description: "Showing information about this topic",
     });
   };
+
+  // Set up event listeners for custom events
+  useEffect(() => {
+    const handleCustomTopicClick = (event: any) => {
+      const { topicId } = event.detail;
+      console.log("Received custom topic click event in Index:", topicId);
+      setSelectedTopicId(topicId);
+      setTopicsOpen(true);
+    };
+
+    const handleCustomUserClick = (event: any) => {
+      const { userId } = event.detail;
+      console.log("Received custom user click event in Index:", userId);
+      setSelectedUserId(userId);
+      setUsersOpen(true);
+    };
+
+    document.addEventListener('topic-click', handleCustomTopicClick);
+    document.addEventListener('user-click', handleCustomUserClick);
+
+    return () => {
+      document.removeEventListener('topic-click', handleCustomTopicClick);
+      document.removeEventListener('user-click', handleCustomUserClick);
+    };
+  }, []);
   
   return (
     <div className="min-h-screen bg-web3-bg-dark">
@@ -91,12 +116,13 @@ const Index: React.FC = () => {
               <CollapsibleContent>
                 <div className="space-y-3">
                   {mockUsers.map(user => (
-                    <UserCard 
-                      key={user.id}
-                      user={user} 
-                      onClick={handleUserClick} 
-                      isExpanded={selectedUserId === user.id} 
-                    />
+                    <div key={user.id} data-user-id={user.id}>
+                      <UserCard 
+                        user={user} 
+                        onClick={handleUserClick} 
+                        isExpanded={selectedUserId === user.id} 
+                      />
+                    </div>
                   ))}
                 </div>
               </CollapsibleContent>
