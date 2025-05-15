@@ -26,6 +26,15 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
   
+  // Generate some mock key mentions for the topic
+  const keyMentions = [
+    { text: "Scalability improvements", sentiment: "positive" },
+    { text: "Network congestion", sentiment: "negative" },
+    { text: "Developer adoption", sentiment: "positive" },
+    { text: "Fee structure", sentiment: "neutral" },
+    { text: "Security updates", sentiment: "positive" }
+  ];
+  
   return (
     <Dialog open={!!topicId} onOpenChange={() => onClose()}>
       <DialogContent className="bg-web3-bg-dark text-white border-gray-800 max-w-3xl">
@@ -64,6 +73,25 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
               <p className={`text-xl font-bold ${topic.sentiment > 0.5 ? 'text-web3-success' : topic.sentiment < 0 ? 'text-web3-error' : 'text-web3-warning'}`}>
                 {Math.round((topic.sentiment + 1) / 2 * 100)}%
               </p>
+            </div>
+          </div>
+          
+          {/* Key Mentions Section */}
+          <div className="mt-6">
+            <h3 className="text-lg font-medium mb-3">Key Mentions</h3>
+            <div className="grid grid-cols-1 gap-2">
+              {keyMentions.map((mention, index) => (
+                <div 
+                  key={index}
+                  className={`p-2 rounded-md ${
+                    mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-20' : 
+                    mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-20' : 
+                    'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-20'
+                  }`}
+                >
+                  <p className="text-sm">{mention.text}</p>
+                </div>
+              ))}
             </div>
           </div>
           
