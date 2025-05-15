@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,6 +62,24 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// Web3 dashboard specific colors
+				web3: {
+					'bg-dark': '#1A1F2C',
+					'card-bg': '#242A38',
+					'accent-purple': '#9b87f5',
+					'accent-blue': '#33C3F0',
+					'highlight': '#7E69AB',
+					'text-primary': '#FFFFFF',
+					'text-secondary': '#8E9196',
+					'success': '#70D6BF',
+					'warning': '#FEC6A1',
+					'error': '#ea384c',
+					'chart-1': '#9b87f5',
+					'chart-2': '#33C3F0',
+					'chart-3': '#70D6BF',
+					'chart-4': '#FEC6A1',
+					'chart-5': '#D946EF',
 				}
 			},
 			borderRadius: {
@@ -84,11 +103,20 @@ export default {
 					to: {
 						height: '0'
 					}
+				},
+				'pulse-soft': {
+					'0%, 100%': {
+						opacity: '1',
+					},
+					'50%': {
+						opacity: '0.8',
+					},
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
 			}
 		}
 	},
