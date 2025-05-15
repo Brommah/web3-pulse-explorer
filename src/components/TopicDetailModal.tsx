@@ -35,13 +35,68 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
   
-  // Mock users for key mentions
-  const mockUsers = [
-    { id: 'u1', username: 'crypto_whale', address: '0x123...789', avatar: '', reputation: 92 },
-    { id: 'u2', username: 'defi_expert', address: '0x456...012', avatar: '', reputation: 87 },
-    { id: 'u3', username: 'nft_collector', address: '0x789...345', avatar: '', reputation: 78 },
-    { id: 'u4', username: 'blockchain_dev', address: '0xabc...def', avatar: '', reputation: 95 },
-    { id: 'u5', username: 'token_trader', address: '0xdef...123', avatar: '', reputation: 82 },
+  // Updated mock users to include all required User properties
+  const mockUsers: User[] = [
+    { 
+      id: 'u1', 
+      username: 'crypto_whale', 
+      address: '0x123...789', 
+      avatar: '', 
+      reputation: 92,
+      joinedAt: new Date(2022, 1, 15),
+      contributions: 220,
+      topics: 35,
+      topTopics: ['DeFi', 'Yield', 'Governance'],
+      sentiment: 0.75
+    },
+    { 
+      id: 'u2', 
+      username: 'defi_expert', 
+      address: '0x456...012', 
+      avatar: '', 
+      reputation: 87,
+      joinedAt: new Date(2021, 6, 10),
+      contributions: 180,
+      topics: 29,
+      topTopics: ['Lending', 'Staking', 'Yield'],
+      sentiment: 0.82
+    },
+    { 
+      id: 'u3', 
+      username: 'nft_collector', 
+      address: '0x789...345', 
+      avatar: '', 
+      reputation: 78,
+      joinedAt: new Date(2022, 3, 22),
+      contributions: 142,
+      topics: 23,
+      topTopics: ['NFT', 'Art', 'Collectibles'],
+      sentiment: 0.65
+    },
+    { 
+      id: 'u4', 
+      username: 'blockchain_dev', 
+      address: '0xabc...def', 
+      avatar: '', 
+      reputation: 95,
+      joinedAt: new Date(2020, 9, 5),
+      contributions: 276,
+      topics: 41,
+      topTopics: ['Layer2', 'Development', 'Security'],
+      sentiment: 0.91
+    },
+    { 
+      id: 'u5', 
+      username: 'token_trader', 
+      address: '0xdef...123', 
+      avatar: '', 
+      reputation: 82,
+      joinedAt: new Date(2021, 11, 18),
+      contributions: 165,
+      topics: 28,
+      topTopics: ['Trading', 'Markets', 'Analysis'],
+      sentiment: 0.73
+    },
   ];
   
   // Generate mock key mentions
