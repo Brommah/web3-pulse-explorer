@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation, User } from '@/utils/mockData';
 import { Badge } from './ui/badge';
@@ -93,6 +92,17 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
       sentiment: 0.73
     },
   ];
+  
+  // Track open/closed state for each key mention
+  const [openMentions, setOpenMentions] = useState<{[key: string]: boolean}>({});
+  
+  // Toggle a specific mention's open state
+  const toggleMention = (mentionText: string) => {
+    setOpenMentions(prev => ({
+      ...prev,
+      [mentionText]: !prev[mentionText]
+    }));
+  };
   
   // Generate mock key mentions with users and conversations
   const keyMentions: KeyMention[] = [
@@ -241,21 +251,34 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
         <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Key Mentions</h3>
         <div className="grid grid-cols-1 gap-4">
           {keyMentions.map((mention, index) => (
-            <Collapsible key={index} className="space-y-2">
+            <Collapsible 
+              key={index} 
+              open={!!openMentions[mention.text]}
+              className="space-y-2"
+            >
               <div 
-                className={`p-3 rounded-md flex justify-between items-center ${
+                className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
                   mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-30' : 
                   mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-30' : 
                   'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-30'
                 }`}
+                onClick={() => toggleMention(mention.text)}
               >
                 <p className="text-sm font-medium">{mention.text}</p>
-                <CollapsibleTrigger className="focus:outline-none">
-                  <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                <CollapsibleTrigger asChild onClick={(e) => {
+                  e.stopPropagation(); // Prevent the parent div's onClick from firing
+                  toggleMention(mention.text);
+                }}>
+                  <button className="focus:outline-none">
+                    {openMentions[mention.text] ? 
+                      <ChevronUp className="h-4 w-4 text-web3-text-secondary" /> : 
+                      <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                    }
+                  </button>
                 </CollapsibleTrigger>
               </div>
               
-              {/* Community Posts for this key mention - now collapsible */}
+              {/* Community Posts for this key mention */}
               <CollapsibleContent>
                 <div className="pl-4 border-l-2 border-gray-700 ml-2 space-y-2 mt-2">
                   {mention.conversations.map(convo => (

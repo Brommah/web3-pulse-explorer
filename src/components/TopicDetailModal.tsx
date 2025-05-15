@@ -27,6 +27,16 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
   onClose,
   onUserClick
 }) => {
+  const [openMentions, setOpenMentions] = useState<{[key: string]: boolean}>({});
+  
+  // Toggle a specific mention's open state
+  const toggleMention = (mentionText: string) => {
+    setOpenMentions(prev => ({
+      ...prev,
+      [mentionText]: !prev[mentionText]
+    }));
+  };
+  
   if (!topicId) return null;
   
   const topic = getTopic(topicId);
@@ -184,17 +194,30 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
             <h3 className="text-lg font-medium mb-3">Key Mentions</h3>
             <div className="grid grid-cols-1 gap-2">
               {keyMentions.map((mention, index) => (
-                <Collapsible key={index} className="w-full">
+                <Collapsible 
+                  key={index} 
+                  open={!!openMentions[mention.text]}
+                  className="w-full"
+                >
                   <div 
-                    className={`p-2 rounded-md flex justify-between items-center ${
+                    className={`p-2 rounded-md flex justify-between items-center cursor-pointer ${
                       mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-20' : 
                       mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-20' : 
                       'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-20'
                     }`}
+                    onClick={() => toggleMention(mention.text)}
                   >
                     <p className="text-sm">{mention.text}</p>
-                    <CollapsibleTrigger className="focus:outline-none">
-                      <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                    <CollapsibleTrigger asChild onClick={(e) => {
+                      e.stopPropagation(); // Prevent the parent div's onClick from firing
+                      toggleMention(mention.text);
+                    }}>
+                      <button className="focus:outline-none">
+                        {openMentions[mention.text] ? 
+                          <ChevronUp className="h-4 w-4 text-web3-text-secondary" /> : 
+                          <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                        }
+                      </button>
                     </CollapsibleTrigger>
                   </div>
                   
