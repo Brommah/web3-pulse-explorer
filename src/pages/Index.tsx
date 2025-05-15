@@ -46,6 +46,7 @@ const Index: React.FC = () => {
         <UserProfileModal
           userId={selectedUserId}
           onClose={() => setSelectedUserId(null)}
+          onTopicClick={handleTopicClick}
         />
         
         <TopicDetailModal

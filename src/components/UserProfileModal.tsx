@@ -10,9 +10,10 @@ import { format } from 'date-fns';
 interface UserProfileModalProps {
   userId: string | null;
   onClose: () => void;
+  onTopicClick?: (topicId: string) => void;
 }
 
-const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) => {
+const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, onTopicClick }) => {
   if (!userId) return null;
   
   const user = getUserById(userId);
@@ -47,7 +48,10 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose }) 
           
           <div className="mt-6 space-y-6">
             <EngagementMetrics user={user} conversations={conversations} />
-            <ConversationHistory conversations={conversations} />
+            <ConversationHistory 
+              conversations={conversations} 
+              onTopicClick={onTopicClick} 
+            />
           </div>
         </div>
       </DialogContent>
