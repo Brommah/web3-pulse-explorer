@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import TimeframeSelector from './TimeframeSelector';
 import TopicCard from './TopicCard';
@@ -50,7 +51,11 @@ const CustomTooltip = ({ active, payload, label }: any) => {
   );
 };
 
-const TrendingTopics: React.FC = () => {
+interface TrendingTopicsProps {
+  onTopicClick?: (topicId: string) => void;
+}
+
+const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick }) => {
   const [activeTimeframe, setActiveTimeframe] = useState<TimeFrame>('24h');
   const [visibleTopics, setVisibleTopics] = useState<string[]>([]);
   const { toast } = useToast();
@@ -230,7 +235,11 @@ const TrendingTopics: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {topics.map(topic => (
-          <TopicCard key={topic.id} topic={topic} />
+          <TopicCard 
+            key={topic.id} 
+            topic={topic} 
+            onClick={onTopicClick}
+          />
         ))}
       </div>
     </div>

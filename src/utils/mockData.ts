@@ -1,4 +1,3 @@
-
 // Mock data for the Web3 Community Intelligence Dashboard
 
 export type Topic = {
@@ -295,6 +294,18 @@ export const mockConversations: Record<string, Conversation[]> = {
   ]
 };
 
+// Map of topics to users discussing them (added for the new feature)
+export const mockTopicParticipants: Record<string, string[]> = {
+  '1': ['1', '5', '4', '2'],
+  '2': ['2', '1', '3'],
+  '3': ['3', '5', '2'],
+  '4': ['1', '5', '4'],
+  '5': ['4', '1'],
+  '6': ['2', '5', '3'],
+  '7': ['1', '2', '4'],
+  '8': ['5', '3', '1'],
+};
+
 export const getTopicsByTimeFrame = (timeframe: TimeFrame): Topic[] => {
   const now = Date.now();
   let timeLimit: number;
@@ -322,4 +333,27 @@ export const getUserById = (id: string): User | undefined => {
 
 export const getConversationsByUserId = (userId: string): Conversation[] => {
   return mockConversations[userId] || [];
+};
+
+// New functions for the topic-user connection
+export const getTopic = (id: string): Topic | undefined => {
+  return mockTopics.find(topic => topic.id === id);
+};
+
+export const getUsersDiscussingTopic = (topicId: string): User[] => {
+  const userIds = mockTopicParticipants[topicId] || [];
+  return userIds
+    .map(userId => mockUsers.find(user => user.id === userId))
+    .filter((user): user is User => user !== undefined);
+};
+
+export const getTopicsByUserId = (userId: string): Topic[] => {
+  // Find all topics this user has participated in
+  const topicIds = Object.entries(mockTopicParticipants)
+    .filter(([_, userIds]) => userIds.includes(userId))
+    .map(([topicId]) => topicId);
+  
+  return topicIds
+    .map(topicId => mockTopics.find(topic => topic.id === topicId))
+    .filter((topic): topic is Topic => topic !== undefined);
 };

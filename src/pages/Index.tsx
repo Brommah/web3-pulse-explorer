@@ -4,12 +4,20 @@ import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
 import UserProfileModal from '@/components/UserProfileModal';
+import TopicDetailModal from '@/components/TopicDetailModal';
 
 const Index: React.FC = () => {
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
   
   const handleUserClick = (userId: string) => {
     setSelectedUserId(userId);
+    setSelectedTopicId(null);  // Close topic modal if open
+  };
+  
+  const handleTopicClick = (topicId: string) => {
+    setSelectedTopicId(topicId);
+    setSelectedUserId(null);  // Close user modal if open
   };
   
   return (
@@ -22,11 +30,11 @@ const Index: React.FC = () => {
         
         <main className="space-y-10">
           <section>
-            <TrendingTopics />
+            <TrendingTopics onTopicClick={handleTopicClick} />
           </section>
           
           <section>
-            <h2 className="text-2xl font-bold mb-6">Active Community Members</h2>
+            <h2 className="text-2xl font-bold mb-6">Top Community Members</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {mockUsers.map(user => (
                 <UserCard key={user.id} user={user} onClick={handleUserClick} />
@@ -38,6 +46,12 @@ const Index: React.FC = () => {
         <UserProfileModal
           userId={selectedUserId}
           onClose={() => setSelectedUserId(null)}
+        />
+        
+        <TopicDetailModal
+          topicId={selectedTopicId}
+          onClose={() => setSelectedTopicId(null)}
+          onUserClick={handleUserClick}
         />
       </div>
     </div>

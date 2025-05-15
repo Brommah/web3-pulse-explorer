@@ -7,13 +7,21 @@ import { formatDistanceToNow } from 'date-fns';
 
 interface TopicCardProps {
   topic: Topic;
+  onClick?: (topicId: string) => void;
 }
 
-const TopicCard: React.FC<TopicCardProps> = ({ topic }) => {
+const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick }) => {
   const isTrendUp = topic.trend > 0;
   
+  const handleClick = () => {
+    if (onClick) onClick(topic.id);
+  };
+  
   return (
-    <Card className="bg-web3-card-bg hover:border-web3-accent-purple transition-all duration-300 cursor-pointer">
+    <Card 
+      className="bg-web3-card-bg hover:border-web3-accent-purple transition-all duration-300 cursor-pointer"
+      onClick={handleClick}
+    >
       <CardContent className="pt-4">
         <div className="flex justify-between items-start">
           <h3 className="font-bold text-lg text-white">{topic.title}</h3>
