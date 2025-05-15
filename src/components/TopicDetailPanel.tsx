@@ -4,8 +4,9 @@ import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation, Use
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { TrendingUp, TrendingDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Smile, Frown, Meh } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
 interface TopicDetailPanelProps {
   topicId: string;
@@ -216,6 +217,36 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
     }
   ];
   
+  // Helper function to get sentiment icon and styles
+  const getSentimentData = (sentiment: "positive" | "negative" | "neutral") => {
+    switch(sentiment) {
+      case 'positive':
+        return {
+          icon: <Smile className="h-5 w-5" />,
+          bgColor: 'bg-web3-success',
+          borderColor: 'border-web3-success',
+          textColor: 'text-web3-success',
+          tooltip: 'Positive sentiment'
+        };
+      case 'negative':
+        return {
+          icon: <Frown className="h-5 w-5" />,
+          bgColor: 'bg-web3-error',
+          borderColor: 'border-web3-error',
+          textColor: 'text-web3-error',
+          tooltip: 'Negative sentiment'
+        };
+      default:
+        return {
+          icon: <Meh className="h-5 w-5" />,
+          bgColor: 'bg-web3-warning',
+          borderColor: 'border-web3-warning',
+          textColor: 'text-web3-warning',
+          tooltip: 'Neutral sentiment'
+        };
+    }
+  };
+  
   return (
     <div className="bg-web3-bg-dark rounded-b-md p-6 border-t-0 border border-web3-accent-purple shadow-lg animate-fade-in">
       <div className="flex justify-between items-start">
@@ -254,67 +285,91 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
         </div>
       </div>
       
-      {/* Key Mentions Section with Collapsible Content */}
+      {/* Key Mentions Section with Improved Sentiment Indicators */}
       <div className="mt-8">
         <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Key Mentions</h3>
         <div className="grid grid-cols-1 gap-4">
-          {keyMentions.map((mention, index) => (
-            <Collapsible 
-              key={index} 
-              open={!!openMentions[mention.text]}
-              className="space-y-2"
-            >
-              <div 
-                className={`p-3 rounded-md flex justify-between items-center cursor-pointer ${
-                  mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-30' : 
-                  mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-30' : 
-                  'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-30'
-                }`}
-                onClick={() => toggleMention(mention.text)}
+          {keyMentions.map((mention, index) => {
+            const sentimentData = getSentimentData(mention.sentiment);
+            
+            return (
+              <Collapsible 
+                key={index} 
+                open={!!openMentions[mention.text]}
+                className="space-y-2"
               >
-                <p className="text-sm font-medium">{mention.text}</p>
-                <CollapsibleTrigger asChild onClick={(e) => {
-                  e.stopPropagation(); // Prevent the parent div's onClick from firing
-                  toggleMention(mention.text);
-                }}>
-                  <button className="focus:outline-none">
-                    {openMentions[mention.text] ? 
-                      <ChevronUp className="h-4 w-4 text-web3-text-secondary" /> : 
-                      <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
-                    }
-                  </button>
-                </CollapsibleTrigger>
-              </div>
-              
-              {/* Community Posts for this key mention */}
-              <CollapsibleContent>
-                <div className="pl-4 border-l-2 border-gray-700 ml-2 space-y-2 mt-2">
-                  {mention.conversations.map(convo => (
-                    <Card key={convo.id} className="bg-web3-card-bg border border-gray-800">
-                      <CardContent className="p-3">
-                        <div className="flex items-start mb-2">
-                          <Avatar className="h-6 w-6 mr-2">
-                            <AvatarImage src={convo.user.avatar} alt={convo.user.username} />
-                            <AvatarFallback className="text-xs">{convo.user.username[0].toUpperCase()}</AvatarFallback>
-                          </Avatar>
-                          <div className="flex-grow">
-                            <p className="text-sm font-medium text-web3-accent-purple">{convo.user.username}</p>
-                            <p className="text-xs text-web3-text-secondary">{convo.user.address}</p>
+                <div 
+                  className={`rounded-md flex justify-between items-center cursor-pointer border-l-4 ${sentimentData.borderColor} bg-web3-card-bg shadow-sm hover:bg-opacity-80 transition-colors`}
+                  onClick={() => toggleMention(mention.text)}
+                >
+                  {/* Left side with icon and text */}
+                  <div className="flex items-center flex-grow py-3 pl-3">
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <div className={`p-1.5 rounded-full mr-3 ${sentimentData.bgColor} bg-opacity-20`}>
+                            <span className={sentimentData.textColor}>
+                              {sentimentData.icon}
+                            </span>
                           </div>
-                        </div>
-                        <blockquote className="text-sm border-l-2 border-gray-600 pl-3 italic">
-                          {convo.content}
-                        </blockquote>
-                        <div className="text-xs text-web3-text-secondary mt-2">
-                          {new Date(convo.timestamp).toLocaleString()}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
+                        </TooltipTrigger>
+                        <TooltipContent side="top">
+                          <p>{sentimentData.tooltip}</p>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                    <p className="text-sm font-medium">{mention.text}</p>
+                    
+                    {/* Conversation count badge */}
+                    <Badge className={`ml-3 ${sentimentData.bgColor} bg-opacity-20 ${sentimentData.textColor} border border-opacity-30 ${sentimentData.borderColor}`}>
+                      {mention.conversations.length} {mention.conversations.length === 1 ? 'post' : 'posts'}
+                    </Badge>
+                  </div>
+                  
+                  {/* Expand/collapse button */}
+                  <CollapsibleTrigger asChild onClick={(e) => {
+                    e.stopPropagation();
+                    toggleMention(mention.text);
+                  }}>
+                    <button className="pr-3 focus:outline-none">
+                      {openMentions[mention.text] ? 
+                        <ChevronUp className="h-4 w-4 text-web3-text-secondary" /> : 
+                        <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                      }
+                    </button>
+                  </CollapsibleTrigger>
                 </div>
-              </CollapsibleContent>
-            </Collapsible>
-          ))}
+                
+                {/* Community Posts for this key mention */}
+                <CollapsibleContent>
+                  <div className="pl-4 border-l-2 border-gray-700 ml-2 space-y-2 mt-2">
+                    {mention.conversations.map(convo => (
+                      <Card key={convo.id} className="bg-web3-card-bg border border-gray-800">
+                        <CardContent className="p-3">
+                          <div className="flex items-start mb-2">
+                            <Avatar className="h-6 w-6 mr-2">
+                              <AvatarImage src={convo.user.avatar} alt={convo.user.username} />
+                              <AvatarFallback className="text-xs">{convo.user.username[0].toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <div className="flex-grow">
+                              <p className="text-sm font-medium text-web3-accent-purple">{convo.user.username}</p>
+                              <p className="text-xs text-web3-text-secondary">{convo.user.address}</p>
+                            </div>
+                          </div>
+                          <blockquote className="text-sm border-l-2 border-gray-600 pl-3 italic">
+                            {convo.content}
+                          </blockquote>
+                          <div className="text-xs text-web3-text-secondary mt-2">
+                            {new Date(convo.timestamp).toLocaleString()}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            );
+          })}
         </div>
       </div>
       
