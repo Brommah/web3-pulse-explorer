@@ -62,6 +62,7 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
         <div className="animate-accordion-down overflow-hidden">
           <TopicDetailPanel 
             topicId={topic.id} 
+            skipTitle={true} // Skip displaying the title again in the expanded view
             onUserClick={(userId) => {
               if (onClick) {
                 onClick(userId);
