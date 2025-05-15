@@ -48,19 +48,6 @@
     background-size: 24px 24px;
   }
   
-  .card-glow {
-    @apply relative;
-  }
-  
-  .card-glow::before {
-    content: '';
-    @apply absolute -inset-0.5 rounded-lg bg-gradient-to-r from-web3-accent-purple/20 to-web3-accent-blue/20 opacity-0 transition duration-300 blur-md;
-  }
-  
-  .card-glow:hover::before {
-    @apply opacity-100;
-  }
-  
   .animated-gradient {
     background-size: 400% 400%;
     animation: gradient 8s ease infinite;

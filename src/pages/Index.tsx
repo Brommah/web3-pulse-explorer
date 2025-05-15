@@ -85,7 +85,7 @@ const Index: React.FC = () => {
             <Collapsible 
               open={topicsOpen} 
               onOpenChange={setTopicsOpen}
-              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800 card-glow"
+              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800"
             >
               <div className="flex justify-between items-center mb-5">
                 <h2 className="text-2xl font-bold text-white">Trending Topics</h2>
@@ -108,7 +108,7 @@ const Index: React.FC = () => {
             <Collapsible 
               open={usersOpen} 
               onOpenChange={setUsersOpen}
-              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800 card-glow"
+              className="bg-web3-card-bg rounded-lg p-6 shadow-lg border border-gray-800"
             >
               <div className="flex justify-between items-center mb-5">
                 <h2 className="text-2xl font-bold text-white">Top Community Members</h2>
