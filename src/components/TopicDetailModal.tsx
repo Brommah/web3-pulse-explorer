@@ -1,16 +1,25 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { getTopic, getUsersDiscussingTopic, User, Topic } from '@/utils/mockData';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { TrendingUp, TrendingDown } from 'lucide-react';
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 interface TopicDetailModalProps {
   topicId: string | null;
   onClose: () => void;
   onUserClick: (userId: string) => void;
+}
+
+interface KeyMention {
+  text: string;
+  sentiment: "positive" | "negative" | "neutral";
+  user: User;
+  content: string;
+  timestamp: Date;
 }
 
 const TopicDetailModal: React.FC<TopicDetailModalProps> = ({ 
@@ -26,13 +35,52 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
   
-  // Generate some mock key mentions for the topic
-  const keyMentions = [
-    { text: "Scalability improvements", sentiment: "positive" },
-    { text: "Network congestion", sentiment: "negative" },
-    { text: "Developer adoption", sentiment: "positive" },
-    { text: "Fee structure", sentiment: "neutral" },
-    { text: "Security updates", sentiment: "positive" }
+  // Mock users for key mentions
+  const mockUsers = [
+    { id: 'u1', username: 'crypto_whale', address: '0x123...789', avatar: '', reputation: 92 },
+    { id: 'u2', username: 'defi_expert', address: '0x456...012', avatar: '', reputation: 87 },
+    { id: 'u3', username: 'nft_collector', address: '0x789...345', avatar: '', reputation: 78 },
+    { id: 'u4', username: 'blockchain_dev', address: '0xabc...def', avatar: '', reputation: 95 },
+    { id: 'u5', username: 'token_trader', address: '0xdef...123', avatar: '', reputation: 82 },
+  ];
+  
+  // Generate mock key mentions
+  const keyMentions: KeyMention[] = [
+    { 
+      text: "Scalability improvements", 
+      sentiment: "positive",
+      user: mockUsers[0],
+      content: "The new scaling solution implemented by Aave has drastically improved transaction throughput.",
+      timestamp: new Date(Date.now() - 3600000 * 4)
+    },
+    { 
+      text: "Network congestion", 
+      sentiment: "negative",
+      user: mockUsers[2],
+      content: "The network congestion is still an issue during peak trading hours.",
+      timestamp: new Date(Date.now() - 3600000 * 12)
+    },
+    { 
+      text: "Developer adoption", 
+      sentiment: "positive",
+      user: mockUsers[3],
+      content: "More developers are building on top of these lending protocols than ever before.",
+      timestamp: new Date(Date.now() - 3600000 * 6)
+    },
+    { 
+      text: "Fee structure", 
+      sentiment: "neutral",
+      user: mockUsers[0],
+      content: "The community is discussing changes to the fee structure for long-term sustainability.",
+      timestamp: new Date(Date.now() - 3600000 * 24)
+    },
+    { 
+      text: "Security updates", 
+      sentiment: "positive",
+      user: mockUsers[1],
+      content: "The latest security audit found no critical vulnerabilities.",
+      timestamp: new Date(Date.now() - 3600000 * 14)
+    }
   ];
   
   return (
@@ -76,21 +124,50 @@ const TopicDetailModal: React.FC<TopicDetailModalProps> = ({
             </div>
           </div>
           
-          {/* Key Mentions Section */}
+          {/* Key Mentions Section - Now Collapsible */}
           <div className="mt-6">
             <h3 className="text-lg font-medium mb-3">Key Mentions</h3>
             <div className="grid grid-cols-1 gap-2">
               {keyMentions.map((mention, index) => (
-                <div 
-                  key={index}
-                  className={`p-2 rounded-md ${
-                    mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-20' : 
-                    mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-20' : 
-                    'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-20'
-                  }`}
-                >
-                  <p className="text-sm">{mention.text}</p>
-                </div>
+                <Collapsible key={index} className="w-full">
+                  <div 
+                    className={`p-2 rounded-md flex justify-between items-center ${
+                      mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-20' : 
+                      mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-20' : 
+                      'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-20'
+                    }`}
+                  >
+                    <p className="text-sm">{mention.text}</p>
+                    <CollapsibleTrigger className="focus:outline-none">
+                      <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                    </CollapsibleTrigger>
+                  </div>
+                  
+                  <CollapsibleContent>
+                    <div className="pl-4 border-l-2 border-gray-700 ml-2 mt-2">
+                      <Card className="bg-web3-card-bg border border-gray-800">
+                        <CardContent className="p-3">
+                          <div className="flex items-start mb-2">
+                            <Avatar className="h-6 w-6 mr-2">
+                              <AvatarImage src={mention.user.avatar} alt={mention.user.username} />
+                              <AvatarFallback className="text-xs">{mention.user.username[0].toUpperCase()}</AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="text-sm font-medium text-web3-accent-purple">{mention.user.username}</p>
+                              <p className="text-xs text-web3-text-secondary">{mention.user.address}</p>
+                            </div>
+                          </div>
+                          <blockquote className="text-sm border-l-2 border-gray-600 pl-3 italic">
+                            {mention.content}
+                          </blockquote>
+                          <div className="text-xs text-web3-text-secondary mt-2">
+                            {mention.timestamp.toLocaleString()}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
               ))}
             </div>
           </div>

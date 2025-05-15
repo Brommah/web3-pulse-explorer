@@ -1,10 +1,11 @@
 
-import React from 'react';
-import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation } from '@/utils/mockData';
+import React, { useState } from 'react';
+import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation, User } from '@/utils/mockData';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { TrendingUp, TrendingDown, MessageSquare, ThumbsUp } from 'lucide-react';
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp } from 'lucide-react';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 
 interface TopicDetailPanelProps {
   topicId: string;
@@ -15,7 +16,7 @@ interface TopicDetailPanelProps {
 interface KeyMention {
   text: string;
   sentiment: "positive" | "negative" | "neutral";
-  conversations: Conversation[];
+  conversations: Array<Conversation & { user: User }>;
 }
 
 const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({ 
@@ -29,7 +30,16 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
   
-  // Generate mock key mentions with their related conversations
+  // Mock users for conversations
+  const mockUsers = [
+    { id: 'u1', username: 'crypto_whale', address: '0x123...789', avatar: '', reputation: 92 },
+    { id: 'u2', username: 'defi_expert', address: '0x456...012', avatar: '', reputation: 87 },
+    { id: 'u3', username: 'nft_collector', address: '0x789...345', avatar: '', reputation: 78 },
+    { id: 'u4', username: 'blockchain_dev', address: '0xabc...def', avatar: '', reputation: 95 },
+    { id: 'u5', username: 'token_trader', address: '0xdef...123', avatar: '', reputation: 82 },
+  ];
+  
+  // Generate mock key mentions with users and conversations
   const keyMentions: KeyMention[] = [
     { 
       text: "Scalability improvements", 
@@ -42,7 +52,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "The new scaling solution implemented by Aave has drastically improved transaction throughput.",
           timestamp: new Date(Date.now() - 3600000 * 4),
           reactions: 42,
-          replies: 18
+          replies: 18,
+          user: mockUsers[0]
         },
         { 
           id: 'km1-2', 
@@ -51,7 +62,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "With these recent improvements, we're seeing much lower gas fees on lending activities.",
           timestamp: new Date(Date.now() - 3600000 * 8),
           reactions: 27,
-          replies: 9
+          replies: 9,
+          user: mockUsers[1]
         }
       ]
     },
@@ -66,7 +78,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "The network congestion is still an issue during peak trading hours.",
           timestamp: new Date(Date.now() - 3600000 * 12),
           reactions: 31,
-          replies: 14
+          replies: 14,
+          user: mockUsers[2]
         }
       ]
     },
@@ -81,7 +94,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "More developers are building on top of these lending protocols than ever before.",
           timestamp: new Date(Date.now() - 3600000 * 6),
           reactions: 54,
-          replies: 23
+          replies: 23,
+          user: mockUsers[3]
         },
         { 
           id: 'km3-2', 
@@ -90,7 +104,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "The developer tooling has significantly improved over the last quarter.",
           timestamp: new Date(Date.now() - 3600000 * 10),
           reactions: 38,
-          replies: 17
+          replies: 17,
+          user: mockUsers[4]
         }
       ]
     },
@@ -105,7 +120,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "The community is discussing changes to the fee structure for long-term sustainability.",
           timestamp: new Date(Date.now() - 3600000 * 24),
           reactions: 29,
-          replies: 32
+          replies: 32,
+          user: mockUsers[0]
         }
       ]
     },
@@ -120,7 +136,8 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
           content: "The latest security audit found no critical vulnerabilities.",
           timestamp: new Date(Date.now() - 3600000 * 14),
           reactions: 61,
-          replies: 12
+          replies: 12,
+          user: mockUsers[1]
         }
       ]
     }
@@ -164,46 +181,53 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
         </div>
       </div>
       
-      {/* Key Mentions Section with Community Posts */}
+      {/* Key Mentions Section with Collapsible Content */}
       <div className="mt-8">
         <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Key Mentions</h3>
         <div className="grid grid-cols-1 gap-4">
           {keyMentions.map((mention, index) => (
-            <div key={index} className="space-y-3">
+            <Collapsible key={index} className="space-y-2">
               <div 
-                className={`p-3 rounded-md ${
+                className={`p-3 rounded-md flex justify-between items-center ${
                   mention.sentiment === 'positive' ? 'bg-web3-success bg-opacity-10 border border-web3-success border-opacity-30' : 
                   mention.sentiment === 'negative' ? 'bg-web3-error bg-opacity-10 border border-web3-error border-opacity-30' : 
                   'bg-web3-warning bg-opacity-10 border border-web3-warning border-opacity-30'
                 }`}
               >
                 <p className="text-sm font-medium">{mention.text}</p>
+                <CollapsibleTrigger className="focus:outline-none">
+                  <ChevronDown className="h-4 w-4 text-web3-text-secondary" />
+                </CollapsibleTrigger>
               </div>
               
-              {/* Community Posts for this key mention */}
-              <div className="pl-4 border-l-2 border-gray-700 ml-2 space-y-2">
-                {mention.conversations.map(convo => (
-                  <Card key={convo.id} className="bg-web3-card-bg border border-gray-800">
-                    <CardContent className="p-3 text-sm">
-                      <p className="mb-2">{convo.content}</p>
-                      <div className="flex items-center text-xs text-web3-text-secondary mt-2 justify-between">
-                        <span>{new Date(convo.timestamp).toLocaleString()}</span>
-                        <div className="flex items-center space-x-3">
-                          <div className="flex items-center">
-                            <ThumbsUp size={12} className="mr-1" />
-                            <span>{convo.reactions}</span>
-                          </div>
-                          <div className="flex items-center">
-                            <MessageSquare size={12} className="mr-1" />
-                            <span>{convo.replies}</span>
+              {/* Community Posts for this key mention - now collapsible */}
+              <CollapsibleContent>
+                <div className="pl-4 border-l-2 border-gray-700 ml-2 space-y-2 mt-2">
+                  {mention.conversations.map(convo => (
+                    <Card key={convo.id} className="bg-web3-card-bg border border-gray-800">
+                      <CardContent className="p-3">
+                        <div className="flex items-start mb-2">
+                          <Avatar className="h-6 w-6 mr-2">
+                            <AvatarImage src={convo.user.avatar} alt={convo.user.username} />
+                            <AvatarFallback className="text-xs">{convo.user.username[0].toUpperCase()}</AvatarFallback>
+                          </Avatar>
+                          <div className="flex-grow">
+                            <p className="text-sm font-medium text-web3-accent-purple">{convo.user.username}</p>
+                            <p className="text-xs text-web3-text-secondary">{convo.user.address}</p>
                           </div>
                         </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </div>
+                        <blockquote className="text-sm border-l-2 border-gray-600 pl-3 italic">
+                          {convo.content}
+                        </blockquote>
+                        <div className="text-xs text-web3-text-secondary mt-2">
+                          {new Date(convo.timestamp).toLocaleString()}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </CollapsibleContent>
+            </Collapsible>
           ))}
         </div>
       </div>
