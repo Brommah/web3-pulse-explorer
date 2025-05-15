@@ -6,14 +6,16 @@ import { TimeFrame } from '@/utils/mockData';
 interface TimeframeSelectorProps {
   activeTimeframe: TimeFrame;
   onTimeframeChange: (timeframe: TimeFrame) => void;
+  className?: string;
 }
 
 const TimeframeSelector: React.FC<TimeframeSelectorProps> = ({
   activeTimeframe,
-  onTimeframeChange
+  onTimeframeChange,
+  className = ''
 }) => {
   return (
-    <div className="flex items-center space-x-2">
+    <div className={`flex items-center space-x-2 ${className}`}>
       <Button
         variant={activeTimeframe === '24h' ? 'default' : 'outline'}
         size="sm"

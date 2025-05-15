@@ -1,7 +1,9 @@
 
-import { User, Conversation } from '@/utils/mockData';
+import { User, Conversation, TimeFrame } from '@/utils/mockData';
 import { Card, CardContent } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { useState } from 'react';
+import TimeframeSelector from './TimeframeSelector';
 
 interface EngagementMetricsProps {
   user: User;
@@ -9,15 +11,58 @@ interface EngagementMetricsProps {
 }
 
 const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversations }) => {
-  // Calculate engagement metrics
-  const totalReactions = conversations.reduce((sum, conv) => sum + conv.reactions, 0);
-  const totalReplies = conversations.reduce((sum, conv) => sum + conv.replies, 0);
-  const averageReactions = conversations.length > 0 ? totalReactions / conversations.length : 0;
-  const averageReplies = conversations.length > 0 ? totalReplies / conversations.length : 0;
+  const [timeframe, setTimeframe] = useState<TimeFrame>('24h');
   
-  // Prepare data for the pie chart
+  // Calculate time threshold based on selected timeframe
+  const getTimeThreshold = () => {
+    const now = new Date();
+    switch(timeframe) {
+      case '24h':
+        return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+      case 'week':
+        return new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+      case 'month':
+        return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+      default:
+        return new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    }
+  };
+
+  const timeThreshold = getTimeThreshold();
+  
+  // Filter conversations based on timeframe
+  const filteredConversations = conversations.filter(
+    conv => new Date(conv.timestamp) > timeThreshold
+  );
+  
+  // Calculate engagement metrics for the selected timeframe
+  const totalReactions = filteredConversations.reduce((sum, conv) => sum + conv.reactions, 0);
+  const totalReplies = filteredConversations.reduce((sum, conv) => sum + conv.replies, 0);
+  const averageReactions = filteredConversations.length > 0 ? totalReactions / filteredConversations.length : 0;
+  const averageReplies = filteredConversations.length > 0 ? totalReplies / filteredConversations.length : 0;
+  
+  // Get timeframe-specific user stats (simplified calculation for demo)
+  const getTimeframeContributions = () => {
+    switch(timeframe) {
+      case '24h': return Math.round(user.contributions * 0.05); // 5% of total in last 24h
+      case 'week': return Math.round(user.contributions * 0.25); // 25% of total in last week
+      case 'month': return Math.round(user.contributions * 0.8); // 80% of total in last month
+      default: return user.contributions;
+    }
+  };
+  
+  const getTimeframeReputation = () => {
+    switch(timeframe) {
+      case '24h': return Math.round(user.reputation * 0.02); // Gained 2% in last 24h
+      case 'week': return Math.round(user.reputation * 0.1); // Gained 10% in last week
+      case 'month': return Math.round(user.reputation * 0.3); // Gained 30% in last month
+      default: return user.reputation;
+    }
+  };
+
+  // Prepare data for the pie chart based on filtered conversations
   const topicCounts: Record<string, number> = {};
-  conversations.forEach(conv => {
+  filteredConversations.forEach(conv => {
     topicCounts[conv.topicTitle] = (topicCounts[conv.topicTitle] || 0) + 1;
   });
   
@@ -30,7 +75,13 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversatio
   
   return (
     <div className="space-y-4">
-      <h3 className="text-lg font-medium">Engagement Metrics</h3>
+      <div className="flex justify-between items-center">
+        <h3 className="text-lg font-medium">Engagement Metrics</h3>
+        <TimeframeSelector 
+          activeTimeframe={timeframe} 
+          onTimeframeChange={setTimeframe}
+        />
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-web3-card-bg">
@@ -60,7 +111,7 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversatio
                 </ResponsiveContainer>
               ) : (
                 <div className="h-full flex items-center justify-center text-web3-text-secondary">
-                  No data available
+                  No data available for this timeframe
                 </div>
               )}
             </div>
@@ -81,15 +132,18 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversatio
         
         <Card className="bg-web3-card-bg">
           <CardContent className="p-4">
-            <h4 className="text-sm font-medium text-web3-text-secondary mb-4">Engagement Stats</h4>
+            <h4 className="text-sm font-medium text-web3-text-secondary mb-4">
+              {timeframe === '24h' ? '24h Stats' : 
+               timeframe === 'week' ? 'Weekly Stats' : 'Monthly Stats'}
+            </h4>
             <div className="space-y-4">
               <div className="flex justify-between items-center">
-                <span className="text-sm">Total Contributions</span>
-                <span className="font-bold text-web3-accent-purple">{user.contributions}</span>
+                <span className="text-sm">{timeframe === '24h' ? 'Recent' : timeframe === 'week' ? 'Weekly' : 'Monthly'} Contributions</span>
+                <span className="font-bold text-web3-accent-purple">{getTimeframeContributions()}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm">Total Reputation</span>
-                <span className="font-bold text-web3-accent-purple">{user.reputation}</span>
+                <span className="text-sm">{timeframe === '24h' ? 'Recent' : timeframe === 'week' ? 'Weekly' : 'Monthly'} Reputation Gain</span>
+                <span className="font-bold text-web3-accent-purple">+{getTimeframeReputation()}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-sm">Avg. Reactions</span>
@@ -100,8 +154,8 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversatio
                 <span className="font-bold text-web3-accent-purple">{averageReplies.toFixed(1)}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-sm">Topics Created</span>
-                <span className="font-bold text-web3-accent-purple">{user.topics}</span>
+                <span className="text-sm">Active Topics</span>
+                <span className="font-bold text-web3-accent-purple">{Object.keys(topicCounts).length}</span>
               </div>
             </div>
           </CardContent>
