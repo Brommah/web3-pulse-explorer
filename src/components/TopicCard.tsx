@@ -61,6 +61,11 @@ const TopicCard: React.FC<TopicCardProps> = ({ topic, onClick, isExpanded }) => 
                 </Badge>
               )}
             </div>
+            
+            {/* Summary snippet */}
+            <p className="text-web3-text-secondary text-xs mt-2 line-clamp-2">
+              {topic.description || `Discussion about ${topic.title} with ${topic.participants} participants and ${topic.mentions} mentions. Current sentiment is ${topic.sentiment > 0.5 ? "positive" : topic.sentiment < 0 ? "negative" : "neutral"}.`}
+            </p>
           </div>
           <div className="flex items-center space-x-2">
             <div className={`flex items-center px-2 py-1 rounded ${isTrendUp ? 'bg-web3-success bg-opacity-10' : 'bg-web3-error bg-opacity-10'}`}>

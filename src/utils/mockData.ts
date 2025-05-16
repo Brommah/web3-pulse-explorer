@@ -9,6 +9,7 @@ export type Topic = {
   participants: number;
   timestamp: Date;
   tags: string[];
+  description?: string; // Added description field
 };
 
 export type TimeFrame = '24h' | 'week' | 'month';
@@ -45,7 +46,8 @@ export const mockTopics: Topic[] = [
     trend: 23.5,
     participants: 324,
     timestamp: new Date(Date.now() - 3600000 * 2), // 2 hours ago
-    tags: ['Ethereum', 'Scaling', 'Layer2', 'Optimism']
+    tags: ['Ethereum', 'Scaling', 'Layer2', 'Optimism'],
+    description: 'Discussion on scaling solutions for Ethereum including Optimism and Arbitrum. Community focuses on transaction throughput and security considerations.'
   },
   {
     id: '2',
@@ -55,7 +57,8 @@ export const mockTopics: Topic[] = [
     trend: 8.2,
     participants: 189,
     timestamp: new Date(Date.now() - 3600000 * 6), // 6 hours ago
-    tags: ['DeFi', 'Lending', 'Aave', 'Compound']
+    tags: ['DeFi', 'Lending', 'Aave', 'Compound'],
+    description: 'Analysis of lending protocol performance, interest rates, and new collateral types. Recent focus on cross-chain opportunities.'
   },
   {
     id: '3',
@@ -65,7 +68,8 @@ export const mockTopics: Topic[] = [
     trend: -12.8,
     participants: 276,
     timestamp: new Date(Date.now() - 3600000 * 12), // 12 hours ago
-    tags: ['NFT', 'Markets', 'Art', 'Collectibles']
+    tags: ['NFT', 'Markets', 'Art', 'Collectibles'],
+    description: 'Market analysis of NFT collections showing early recovery signs. Discussion on utility vs. art and liquidity challenges.'
   },
   {
     id: '4',
@@ -75,7 +79,8 @@ export const mockTopics: Topic[] = [
     trend: 45.3,
     participants: 142,
     timestamp: new Date(Date.now() - 3600000 * 18), // 18 hours ago
-    tags: ['ZKP', 'Privacy', 'Scaling', 'Technical']
+    tags: ['ZKP', 'Privacy', 'Scaling', 'Technical'],
+    description: 'Technical discussions on recent ZK-proof advancements, particularly zkEVMs and their potential for Ethereum scaling.'
   },
   {
     id: '5',
@@ -85,7 +90,8 @@ export const mockTopics: Topic[] = [
     trend: 6.7,
     participants: 197,
     timestamp: new Date(Date.now() - 3600000 * 24), // 24 hours ago
-    tags: ['DAO', 'Governance', 'Voting', 'Community']
+    tags: ['DAO', 'Governance', 'Voting', 'Community'],
+    description: 'Comparison of governance systems and voting mechanisms. Focus on balancing token-based and reputation-based approaches.'
   },
   {
     id: '6',
@@ -95,7 +101,8 @@ export const mockTopics: Topic[] = [
     trend: 18.4,
     participants: 165,
     timestamp: new Date(Date.now() - 3600000 * 30), // 30 hours ago
-    tags: ['Solana', 'Ecosystem', 'DApps', 'Performance']
+    tags: ['Solana', 'Ecosystem', 'DApps', 'Performance'],
+    description: 'Tracking rapid expansion of Solana ecosystem projects. Discussions about transaction speed and competitive positioning against Ethereum.'
   },
   {
     id: '7',
@@ -105,7 +112,8 @@ export const mockTopics: Topic[] = [
     trend: -8.9,
     participants: 231,
     timestamp: new Date(Date.now() - 3600000 * 36), // 36 hours ago
-    tags: ['Regulation', 'Compliance', 'Legal', 'Government']
+    tags: ['Regulation', 'Compliance', 'Legal', 'Government'],
+    description: 'Updates on global regulatory developments affecting crypto. Concerns about compliance requirements and operating restrictions.'
   },
   {
     id: '8',
@@ -115,7 +123,8 @@ export const mockTopics: Topic[] = [
     trend: 11.2,
     participants: 124,
     timestamp: new Date(Date.now() - 3600000 * 48), // 48 hours ago
-    tags: ['Interoperability', 'Bridge', 'Multi-chain', 'Infrastructure']
+    tags: ['Interoperability', 'Bridge', 'Multi-chain', 'Infrastructure'],
+    description: 'Evaluation of bridge technologies and cross-chain messaging protocols. Security concerns and integration opportunities being highlighted.'
   },
 ];
 

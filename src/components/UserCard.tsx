@@ -31,6 +31,21 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
     }, 10);
   };
 
+  // Generate a value statement based on user properties
+  const getUserValueStatement = () => {
+    const statements = [
+      user.contributions > 300 ? `Made ${user.contributions} valuable contributions to the community.` : '',
+      user.reputation > 95 ? 'Highly respected member with excellent reputation.' : user.reputation > 90 ? 'Well-respected community contributor.' : '',
+      user.topics > 35 ? `Active in ${user.topics} different discussion topics.` : '',
+      user.sentiment > 0.8 ? 'Known for positive and constructive feedback.' : '',
+      user.topTopics.length > 0 ? `Expert in ${user.topTopics.join(', ')}.` : ''
+    ].filter(Boolean);
+
+    return statements.length > 0 
+      ? statements.join(' ') 
+      : `Active community member since ${user.joinedAt.toLocaleDateString()}.`;
+  };
+
   return (
     <Card 
       className={`
@@ -52,6 +67,11 @@ const UserCard: React.FC<UserCardProps> = ({ user, onClick, isExpanded }) => {
             <div>
               <h3 className="font-bold text-white">{user.username}</h3>
               <p className="text-xs text-web3-text-secondary truncate max-w-[200px]">{user.address}</p>
+              
+              {/* Value summary snippet */}
+              <p className="text-xs text-web3-text-secondary mt-1 line-clamp-2">
+                {getUserValueStatement()}
+              </p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
