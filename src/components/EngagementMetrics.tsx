@@ -2,16 +2,21 @@
 import { User, Conversation, TimeFrame } from '@/utils/mockData';
 import { Card, CardContent } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { useState } from 'react';
-import TimeframeSelector from './TimeframeSelector';
+import { useState, useEffect } from 'react';
 
 interface EngagementMetricsProps {
   user: User;
   conversations: Conversation[];
+  initialTimeframe: TimeFrame;
 }
 
-const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversations }) => {
-  const [timeframe, setTimeframe] = useState<TimeFrame>('24h');
+const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversations, initialTimeframe }) => {
+  const [timeframe, setTimeframe] = useState<TimeFrame>(initialTimeframe);
+  
+  // Update timeframe when initialTimeframe changes
+  useEffect(() => {
+    setTimeframe(initialTimeframe);
+  }, [initialTimeframe]);
   
   // Calculate time threshold based on selected timeframe
   const getTimeThreshold = () => {
@@ -75,14 +80,6 @@ const EngagementMetrics: React.FC<EngagementMetricsProps> = ({ user, conversatio
   
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium">Engagement Metrics</h3>
-        <TimeframeSelector 
-          activeTimeframe={timeframe} 
-          onTimeframeChange={setTimeframe}
-        />
-      </div>
-      
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="bg-web3-card-bg">
           <CardContent className="p-4">

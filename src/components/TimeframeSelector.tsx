@@ -20,7 +20,7 @@ const TimeframeSelector: React.FC<TimeframeSelectorProps> = ({
         variant={activeTimeframe === '24h' ? 'default' : 'outline'}
         size="sm"
         onClick={() => onTimeframeChange('24h')}
-        className={activeTimeframe === '24h' ? 'bg-web3-accent-purple' : ''}
+        className={`px-8 py-2 ${activeTimeframe === '24h' ? 'bg-web3-accent-purple hover:bg-web3-accent-purple/90' : 'text-white'}`}
       >
         24h
       </Button>
@@ -28,7 +28,7 @@ const TimeframeSelector: React.FC<TimeframeSelectorProps> = ({
         variant={activeTimeframe === 'week' ? 'default' : 'outline'}
         size="sm"
         onClick={() => onTimeframeChange('week')}
-        className={activeTimeframe === 'week' ? 'bg-web3-accent-purple' : ''}
+        className={`px-8 py-2 ${activeTimeframe === 'week' ? 'bg-web3-accent-purple hover:bg-web3-accent-purple/90' : 'text-white'}`}
       >
         Week
       </Button>
@@ -36,7 +36,7 @@ const TimeframeSelector: React.FC<TimeframeSelectorProps> = ({
         variant={activeTimeframe === 'month' ? 'default' : 'outline'}
         size="sm"
         onClick={() => onTimeframeChange('month')}
-        className={activeTimeframe === 'month' ? 'bg-web3-accent-purple' : ''}
+        className={`px-8 py-2 ${activeTimeframe === 'month' ? 'bg-web3-accent-purple hover:bg-web3-accent-purple/90' : 'text-white'}`}
       >
         Month
       </Button>

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { getUserById, getConversationsByUserId } from '@/utils/mockData';
+import { getUserById, getConversationsByUserId, TimeFrame } from '@/utils/mockData';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import ConversationHistory from './ConversationHistory';
@@ -10,9 +10,10 @@ import { format } from 'date-fns';
 interface UserDetailPanelProps {
   userId: string;
   onTopicClick?: (topicId: string) => void;
+  activeTimeframe: TimeFrame;
 }
 
-const UserDetailPanel: React.FC<UserDetailPanelProps> = ({ userId, onTopicClick }) => {
+const UserDetailPanel: React.FC<UserDetailPanelProps> = ({ userId, onTopicClick, activeTimeframe }) => {
   const user = getUserById(userId);
   if (!user) return null;
   
@@ -50,7 +51,11 @@ const UserDetailPanel: React.FC<UserDetailPanelProps> = ({ userId, onTopicClick 
       <div className="mt-8 space-y-8">
         <div>
           <h3 className="text-lg font-medium mb-4 border-l-4 border-web3-accent-purple pl-3">Engagement Metrics</h3>
-          <EngagementMetrics user={user} conversations={conversations} />
+          <EngagementMetrics 
+            user={user} 
+            conversations={conversations}
+            initialTimeframe={activeTimeframe} 
+          />
         </div>
         
         <div>

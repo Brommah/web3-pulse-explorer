@@ -1,28 +1,20 @@
 
-import React, { useState } from 'react';
-import TimeframeSelector from './TimeframeSelector';
+import React from 'react';
 import TopicCard from './TopicCard';
 import { TimeFrame, getTopicsByTimeFrame } from '@/utils/mockData';
-import { useToast } from '@/hooks/use-toast';
 
 interface TrendingTopicsProps {
   onTopicClick?: (topicId: string) => void;
   expandedTopicId?: string | null;
+  activeTimeframe: TimeFrame;
 }
 
-const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedTopicId }) => {
-  const [activeTimeframe, setActiveTimeframe] = useState<TimeFrame>('24h');
-  const { toast } = useToast();
-  
+const TrendingTopics: React.FC<TrendingTopicsProps> = ({ 
+  onTopicClick, 
+  expandedTopicId,
+  activeTimeframe
+}) => {
   const topics = getTopicsByTimeFrame(activeTimeframe);
-
-  const handleTimeframeChange = (timeframe: TimeFrame) => {
-    setActiveTimeframe(timeframe);
-    toast({
-      title: "Timeframe Updated",
-      description: `Showing topics from the past ${timeframe}`,
-    });
-  };
 
   const handleTopicClick = (topicId: string) => {
     if (onTopicClick) {
@@ -32,13 +24,6 @@ const TrendingTopics: React.FC<TrendingTopicsProps> = ({ onTopicClick, expandedT
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end mb-2">
-        <TimeframeSelector 
-          activeTimeframe={activeTimeframe} 
-          onTimeframeChange={handleTimeframeChange} 
-        />
-      </div>
-
       <div className="space-y-4">
         {topics.map((topic, index) => (
           <div 

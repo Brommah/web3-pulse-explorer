@@ -1,8 +1,9 @@
 
 import React, { useState, useEffect } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
-import { mockUsers, getTopic } from '@/utils/mockData';
+import { mockUsers, getTopic, TimeFrame } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
+import TimeframeSelector from '@/components/TimeframeSelector';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp, Sparkle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -12,6 +13,7 @@ const Index: React.FC = () => {
   const [selectedTopicId, setSelectedTopicId] = useState<string | null>(null);
   const [topicsOpen, setTopicsOpen] = useState(true);
   const [usersOpen, setUsersOpen] = useState(true);
+  const [activeTimeframe, setActiveTimeframe] = useState<TimeFrame>('24h');
   const { toast } = useToast();
   
   // Handle user clicks - toggle selection
@@ -37,6 +39,15 @@ const Index: React.FC = () => {
     toast({
       title: "Viewing Topic",
       description: "Showing information about this topic",
+    });
+  };
+
+  // Handle timeframe changes
+  const handleTimeframeChange = (timeframe: TimeFrame) => {
+    setActiveTimeframe(timeframe);
+    toast({
+      title: "Timeframe Updated",
+      description: `Showing data from the past ${timeframe}`,
     });
   };
 
@@ -77,6 +88,14 @@ const Index: React.FC = () => {
           <p className="text-web3-text-secondary text-lg max-w-2xl mx-auto">Real-time insights into community discussions, topics, and user engagement</p>
         </header>
         
+        <div className="flex justify-center mb-6">
+          <TimeframeSelector 
+            activeTimeframe={activeTimeframe} 
+            onTimeframeChange={handleTimeframeChange} 
+            className="bg-web3-card-bg p-1 rounded-lg"
+          />
+        </div>
+        
         <main>
           {/* Two-column layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -99,6 +118,7 @@ const Index: React.FC = () => {
                   <TrendingTopics 
                     onTopicClick={handleTopicClick}
                     expandedTopicId={selectedTopicId}
+                    activeTimeframe={activeTimeframe}
                   />
                 </div>
               </CollapsibleContent>
@@ -124,7 +144,8 @@ const Index: React.FC = () => {
                       <UserCard 
                         user={user} 
                         onClick={handleUserClick} 
-                        isExpanded={selectedUserId === user.id} 
+                        isExpanded={selectedUserId === user.id}
+                        activeTimeframe={activeTimeframe} 
                       />
                     </div>
                   ))}
