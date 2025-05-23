@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import TrendingTopics from '@/components/TrendingTopics';
 import { mockUsers, getTopic } from '@/utils/mockData';
 import UserCard from '@/components/UserCard';
+import NaturalLanguageQuery from '@/components/NaturalLanguageQuery';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
 import { ChevronDown, ChevronUp, Sparkle } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
@@ -77,7 +78,10 @@ const Index: React.FC = () => {
           <p className="text-web3-text-secondary text-lg max-w-2xl mx-auto">Real-time insights into community discussions, topics, and user engagement</p>
         </header>
         
-        <main>
+        <main className="space-y-8">
+          {/* Natural Language Query Component - NEW */}
+          <NaturalLanguageQuery className="shadow-xl border border-web3-accent-purple/20" />
+
           {/* Two-column layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             
