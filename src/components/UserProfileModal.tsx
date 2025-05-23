@@ -1,5 +1,5 @@
 
-import { getUserById, getConversationsByUserId, User, Conversation } from '@/utils/mockData';
+import { getUserById, getConversationsByUserId, User, Conversation, TimeFrame } from '@/utils/mockData';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -11,9 +11,10 @@ interface UserProfileModalProps {
   userId: string | null;
   onClose: () => void;
   onTopicClick?: (topicId: string) => void;
+  activeTimeframe: TimeFrame;
 }
 
-const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, onTopicClick }) => {
+const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, onTopicClick, activeTimeframe }) => {
   if (!userId) return null;
   
   const user = getUserById(userId);
@@ -55,7 +56,11 @@ const UserProfileModal: React.FC<UserProfileModalProps> = ({ userId, onClose, on
           </div>
           
           <div className="mt-6 space-y-6">
-            <EngagementMetrics user={user} conversations={conversations} />
+            <EngagementMetrics 
+              user={user} 
+              conversations={conversations} 
+              initialTimeframe={activeTimeframe}
+            />
             <ConversationHistory 
               conversations={conversations} 
               onTopicClick={handleTopicClick} 
