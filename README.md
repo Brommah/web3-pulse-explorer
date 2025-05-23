@@ -1,4 +1,14 @@
-# Welcome to your Lovable project
+
+# Web3 Community Intelligence Dashboard
+
+This dashboard provides real-time insights into Web3 community discussions, trending topics, and influential community members. It helps community managers, project leaders, and analysts understand what's happening in their community ecosystem.
+
+## Features
+
+- **Trending Topics**: Track and analyze popular discussion topics with sentiment analysis, trend indicators, and participation metrics
+- **Community Member Insights**: Identify and understand top contributors and their influence within the community
+- **Detailed Views**: Expand cards for in-depth information about topics and community members
+- **Cross-Navigation**: Easily navigate from topics to related users and vice versa
 
 ## Project info
 
