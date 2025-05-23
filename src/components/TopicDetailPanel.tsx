@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { getTopic, getUsersDiscussingTopic, mockConversations, Conversation, User } from '@/utils/mockData';
 import { Badge } from './ui/badge';
 import { Card, CardContent } from './ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Smile, Frown, Meh } from 'lucide-react';
+import { TrendingUp, TrendingDown, ChevronDown, ChevronUp, Smile, Frown, Meh, GitBranch } from 'lucide-react';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from './ui/collapsible';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/tooltip';
 
@@ -30,6 +29,16 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
   
   const users = getUsersDiscussingTopic(topicId);
   const isTrendUp = topic.trend > 0;
+  
+  // Mock topic hierarchy data to represent the topic tree structure
+  // In a real application, this would come from the Conversation Intelligence Service
+  const topicHierarchy = {
+    path: topic.title.includes("DeFi") ? 
+      "Web3 > DeFi > Lending Protocols" : 
+      topic.title.includes("NFT") ? 
+        "Web3 > NFT > Marketplace Trends" : 
+        "Web3 > General > Community Discussion"
+  };
   
   // Updated mock users to include all required User properties
   const mockUsers: User[] = [
@@ -217,7 +226,7 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
     }
   ];
   
-  // Helper function to get sentiment icon and styles
+  // Helper function to get sentiment data
   const getSentimentData = (sentiment: "positive" | "negative" | "neutral") => {
     switch(sentiment) {
       case 'positive':
@@ -249,6 +258,7 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
   
   return (
     <div className="bg-web3-bg-dark rounded-b-md p-6 border-t-0 border border-web3-accent-purple shadow-lg animate-fade-in">
+      {/* Topic header section */}
       <div className="flex justify-between items-start">
         {!skipTitle && (
           <div>
@@ -268,6 +278,22 @@ const TopicDetailPanel: React.FC<TopicDetailPanelProps> = ({
         </div>
       </div>
       
+      {/* Topic hierarchy path - NEW! */}
+      <div className="mt-4 flex items-center">
+        <GitBranch size={16} className="text-web3-accent-blue mr-2" />
+        <p className="text-sm text-web3-text-secondary">
+          {topicHierarchy.path.split(" > ").map((part, index, arr) => (
+            <React.Fragment key={index}>
+              <span className={index === arr.length - 1 ? "text-web3-accent-purple font-medium" : ""}>
+                {part}
+              </span>
+              {index < arr.length - 1 && <span className="mx-1">›</span>}
+            </React.Fragment>
+          ))}
+        </p>
+      </div>
+      
+      {/* Topic metrics */}
       <div className="grid grid-cols-3 gap-4 mt-6">
         <div className="bg-web3-card-bg p-4 rounded-md shadow-md">
           <p className="text-web3-text-secondary text-sm mb-1">Mentions</p>
